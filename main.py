@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import *
 
 window = tk.Tk()
 
@@ -9,8 +10,11 @@ def dimensions():
     for widget in window.winfo_children():
         widget.destroy()
 
-    window.columnconfigure(0, weight=2)
-    window.rowconfigure(1, weight=3)
+    window.columnconfigure(0, weight=1)  # Center-align the first column
+    window.columnconfigure(1, weight=1)
+    window.rowconfigure(0, weight=1)
+    window.rowconfigure(1, weight=1)
+    window.rowconfigure(2, weight=1)
 
     greeting = tk.Label(
         text="Hello to AreaAce!",
@@ -47,7 +51,7 @@ def dimensions():
         command=lambda:chooseShape(3)
     )
     twoDButton.grid(column=0, row=2, padx=5, pady=5)
-    threeDButton.grid(column=1,  row=2, padx=5, pady=5)
+    threeDButton.grid(column=1, row=2, padx=5, pady=5)
 
 
 def chooseShape(n):
