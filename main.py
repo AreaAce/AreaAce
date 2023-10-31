@@ -272,6 +272,9 @@ def calcShape(shape):
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
         def calculatetest():
+            areaInput.delete(0, tk.END)
+            areaInput.insert(0,str(int(firstSideInput.get())*int(firstHeightInput.get())/2))
+            areaInput.State = DISABLED
             print(int(firstSideInput.get())*int(firstHeightInput.get())/2)
 
         buttonTest = tk.Button (frameTriangleDiagram,
