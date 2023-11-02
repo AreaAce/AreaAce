@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+import math
 
 window = tk.Tk()
 
@@ -271,16 +272,108 @@ def calcShape(shape):
         frameAreas.grid(column=0, row=2, padx=15, pady=15)
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
-        def calculatetest():
-            areaInput.delete(0, tk.END)
-            areaInput.insert(0,str(int(firstSideInput.get())*int(firstHeightInput.get())/2))
-            areaInput.State = DISABLED
-            print(int(firstSideInput.get())*int(firstHeightInput.get())/2)
+        def calculateTriangle():
+            value = checkEnoughInformation()
+            print(value)
+            aVal = firstSideInput.get()
+            if aVal != "":
+                a = float(firstSideInput.get())
+            bVal = secondSideInput.get()
+            if bVal != "":
+                b = float(secondSideInput.get())
+            cVal = thirdSideInput.get()
+            if cVal != "":
+                c = float(thirdSideInput.get())
+            h1Val = firstHeightInput.get()
+            if h1Val != "":
+                h1 = float(firstHeightInput.get())
+            h2Val = secondHeightInput.get()
+            if h2Val != "":
+                h2 = float(secondHeightInput.get())
+            h3Val = thirdHeightInput.get()
+            if h3Val != "":
+                h3 = float(thirdHeightInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            pVal = perimeterInput.get()
+            if pVal != "":
+                p = float(perimeterInput.get())
 
-        buttonTest = tk.Button (frameTriangleDiagram,
-            text="Calculate the area",
+            if value == 1:
+                p = a+b+c
+                halfP = p / 2
+
+                perimeterInput.delete(0, tk.END)
+                perimeterInput.insert(0, str(p))
+
+                s = math.sqrt(halfP*(halfP-a)*(halfP-b)*(halfP-c))
+                areaInput.delete(0, tk.END)
+                areaInput.insert(0, str(s))
+
+                h1 = s/a
+                h2 = s/b
+                h3 = s/c
+
+                firstHeightInput.delete(0, tk.END)
+                secondHeightInput.delete(0, tk.END)
+                thirdHeightInput.delete(0, tk.END)
+
+                firstHeightInput.insert(0, str(h1))
+                secondHeightInput.insert(0, str(h2))
+                thirdHeightInput.insert(0, str(h3))
+
+
+
+        def checkEnoughInformation():
+            a = firstSideInput.get()
+            b = secondSideInput.get()
+            c = thirdSideInput.get()
+
+            numberOfSides = 0
+            if a!="":
+                numberOfSides += 1
+            if b!="":
+                numberOfSides += 1
+            if c!="":
+                numberOfSides += 1
+
+            h1 = firstHeightInput.get()
+            h2 = secondHeightInput.get()
+            h3 = thirdHeightInput.get()
+
+            numberOfHeights = 0
+            if h1!="":
+                numberOfHeights += 1
+            if h2!="":
+                numberOfHeights += 1
+            if h3!="":
+                numberOfHeights += 1
+
+            s = areaInput.get()
+            p = perimeterInput.get()
+
+            if numberOfSides >= 3:
+                return 1
+            elif numberOfSides >= 2 and (numberOfHeights >= 1 or s != "" or p != ""):
+                return 2
+            elif numberOfSides >= 1 and (numberOfHeights >= 2 or (s != "" and numberOfHeights >= 1) or (p != "" and numberOfHeights >= 1)):
+                return 3
+            else:
+                if numberOfSides==1 and numberOfHeights == 1:
+                    return 4
+                elif numberOfSides==1 and s!="":
+                    return 5
+                elif numberOfHeights==1 and s!="":
+                    return 6
+                else:
+                    return 0
+
+
+        buttonTest = tk.Button(frameTriangleDiagram,
+            text="Calculate",
             font=(fontName, 15),
-            command=lambda:calculatetest()
+            command=lambda: calculateTriangle()
 
         )
         buttonTest.grid()
@@ -329,7 +422,7 @@ def calcShape(shape):
         thirdSideInput.grid(column=1, row=2, padx=5, pady=15)
 
         firstHeightLabel = tk.Label(frameHeight,
-                                  text="Height a: ",
+                                  text="Height on a: ",
                                   bd=5,
                                   bg='#DDDDDD',
                                   font=(fontName, 15),
@@ -341,7 +434,7 @@ def calcShape(shape):
                                   )
 
         secondHeightLabel = tk.Label(frameHeight,
-                                   text="Height b: ",
+                                   text="Height on b: ",
                                    bd=5,
                                    bg='#DDDDDD',
                                    font=(fontName, 15),
@@ -353,7 +446,7 @@ def calcShape(shape):
                                    )
 
         thirdHeightLabel = tk.Label(frameHeight,
-                                  text="Height c: ",
+                                  text="Height on c: ",
                                   bd=5,
                                   bg='#DDDDDD',
                                   font=(fontName, 15),
@@ -399,9 +492,6 @@ def calcShape(shape):
         areaInput.grid(column=1, row=0, padx=5, pady=15)
         perimeterLabel.grid(column=0, row=1, pady=15)
         perimeterInput.grid(column=1, row=1, padx=5, pady=15)
-
-
-
 
 
 dimensions()
