@@ -3,6 +3,10 @@ from tkinter import *
 from tkinter import messagebox
 import math
 
+import numpy as np
+from matplotlib.patches import Polygon
+import matplotlib.pyplot as plt
+
 window = tk.Tk()
 
 fontName = "Arial"
@@ -305,9 +309,9 @@ def calcShape(shape):
             areaInput.delete(0, tk.END)
             areaInput.insert(0, str(s))
 
-            h1 = s / a
-            h2 = s / b
-            h3 = s / c
+            h1 = s * 2/ a
+            h2 = s * 2/ b
+            h3 = s * 2/ c
 
             firstHeightInput.delete(0, tk.END)
             secondHeightInput.delete(0, tk.END)
@@ -336,6 +340,19 @@ def calcShape(shape):
             alphaInput.configure(state="disabled")
             betaInput.configure(state="disabled")
             gammaInput.configure(state="disabled")
+
+            xPlot = math.sqrt(a**2-h2**2)
+            polygon1 = Polygon([(0, 0), (b, 0), (xPlot,h2), ])
+
+            fig, ax = plt.subplots(1, 1)
+
+            ax.add_patch(polygon1)
+
+
+            plt.ylim(0, math.ceil(h2))
+            plt.xlim(0, math.ceil(b))
+            ax.set_aspect('equal', adjustable='box')
+            plt.show()
 
         def calculateTriangle():
             value = checkEnoughInformation()
@@ -833,6 +850,22 @@ def calcShape(shape):
 
             alphaInput.configure(state="disabled")
             betaInput.configure(state="disabled")
+
+            polygon1 = Polygon([(0, a), (b, 0), (0,0), ])
+
+            fig, ax = plt.subplots(1, 1)
+
+            ax.add_patch(polygon1)
+
+            if a>=b:
+                maxl = math.ceil(a)
+            else:
+                maxl = math.ceil(b)
+
+            plt.ylim(0, maxl)
+            plt.xlim(0, maxl)
+            ax.set_aspect('equal', adjustable='box')
+            plt.show()
 
         def calculateTriangle():
             value = checkEnoughInformation()
