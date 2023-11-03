@@ -7,6 +7,10 @@ import numpy as np
 from matplotlib.patches import Polygon
 import matplotlib.pyplot as plt
 
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
+                                               NavigationToolbar2Tk)
+
 window = tk.Tk()
 
 fontName = "Arial"
@@ -289,70 +293,80 @@ def calcShape(shape):
         frameAreas.grid(column=0, row=2, padx=15, pady=15)
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
-        def threeSidesCalc(a, b, c):
-            p = a + b + c
-            halfP = p / 2
+        def diagramWindow(a, b, h2):
+            top = Toplevel()
+            top.title('Shape diagram')
 
-            firstSideInput.delete(0, tk.END)
-            secondSideInput.delete(0, tk.END)
-            thirdSideInput.delete(0, tk.END)
-
-
-            firstSideInput.insert(0, str(a))
-            secondSideInput.insert(0, str(b))
-            thirdSideInput.insert(0, str(c))
-
-            perimeterInput.delete(0, tk.END)
-            perimeterInput.insert(0, str(p))
-
-            s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - c))
-            areaInput.delete(0, tk.END)
-            areaInput.insert(0, str(s))
-
-            h1 = s * 2/ a
-            h2 = s * 2/ b
-            h3 = s * 2/ c
-
-            firstHeightInput.delete(0, tk.END)
-            secondHeightInput.delete(0, tk.END)
-            thirdHeightInput.delete(0, tk.END)
-
-            firstHeightInput.insert(0, str(h1))
-            secondHeightInput.insert(0, str(h2))
-            thirdHeightInput.insert(0, str(h3))
-
-            alphaInput.configure(state="normal")
-            betaInput.configure(state="normal")
-            gammaInput.configure(state="normal")
-
-            alphaInput.delete(0, tk.END)
-            betaInput.delete(0, tk.END)
-            gammaInput.delete(0, tk.END)
-
-            alpha = math.acos(((b ** 2) + (c ** 2) - (a ** 2)) / (2 * b * c)) * (180.0 / math.pi)
-            beta = math.acos(((a ** 2) + (c ** 2) - (b ** 2)) / (2 * a * c)) * (180.0 / math.pi)
-            gamma = math.acos(((a ** 2) + (b ** 2) - (c ** 2)) / (2 * b * a)) * (180.0 / math.pi)
-
-            alphaInput.insert(0, str(alpha))
-            betaInput.insert(0, str(beta))
-            gammaInput.insert(0, str(gamma))
-
-            alphaInput.configure(state="disabled")
-            betaInput.configure(state="disabled")
-            gammaInput.configure(state="disabled")
-
-            xPlot = math.sqrt(a**2-h2**2)
-            polygon1 = Polygon([(0, 0), (b, 0), (xPlot,h2), ])
+            xPlot = math.sqrt(a ** 2 - h2 ** 2)
+            polygon1 = Polygon([(0, 0), (b, 0), (xPlot, h2)])
 
             fig, ax = plt.subplots(1, 1)
 
             ax.add_patch(polygon1)
 
-
-            plt.ylim(0, math.ceil(h2))
-            plt.xlim(0, math.ceil(b))
+            plt.ylim(0, h2)
+            plt.xlim(0, b)
             ax.set_aspect('equal', adjustable='box')
-            plt.show()
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def threeSidesCalc(a, b, c):
+            if a + b > c and a + c > b and b + c > a:
+                p = a + b + c
+                halfP = p / 2
+
+                firstSideInput.delete(0, tk.END)
+                secondSideInput.delete(0, tk.END)
+                thirdSideInput.delete(0, tk.END)
+
+                firstSideInput.insert(0, str(a))
+                secondSideInput.insert(0, str(b))
+                thirdSideInput.insert(0, str(c))
+
+                perimeterInput.delete(0, tk.END)
+                perimeterInput.insert(0, str(p))
+
+                s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - c))
+                areaInput.delete(0, tk.END)
+                areaInput.insert(0, str(s))
+
+                h1 = s * 2 / a
+                h2 = s * 2 / b
+                h3 = s * 2 / c
+
+                firstHeightInput.delete(0, tk.END)
+                secondHeightInput.delete(0, tk.END)
+                thirdHeightInput.delete(0, tk.END)
+
+                firstHeightInput.insert(0, str(h1))
+                secondHeightInput.insert(0, str(h2))
+                thirdHeightInput.insert(0, str(h3))
+
+                alphaInput.configure(state="normal")
+                betaInput.configure(state="normal")
+                gammaInput.configure(state="normal")
+
+                alphaInput.delete(0, tk.END)
+                betaInput.delete(0, tk.END)
+                gammaInput.delete(0, tk.END)
+
+                alpha = math.acos(((b ** 2) + (c ** 2) - (a ** 2)) / (2 * b * c)) * (180.0 / math.pi)
+                beta = math.acos(((a ** 2) + (c ** 2) - (b ** 2)) / (2 * a * c)) * (180.0 / math.pi)
+                gamma = math.acos(((a ** 2) + (b ** 2) - (c ** 2)) / (2 * b * a)) * (180.0 / math.pi)
+
+                alphaInput.insert(0, str(alpha))
+                betaInput.insert(0, str(beta))
+                gammaInput.insert(0, str(gamma))
+
+                alphaInput.configure(state="disabled")
+                betaInput.configure(state="disabled")
+                gammaInput.configure(state="disabled")
+                diagramWindow(a, b, h2)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
 
         def calculateTriangle():
             value = checkEnoughInformation()
@@ -410,9 +424,9 @@ def calcShape(shape):
                 elif sVal != "":
                     try:
                         if aVal == "":
-                            h3 = (2*s)/c
-                            alpha = math.asin(h3/b)
-                            a = math.sqrt((b**2)+(c**2)-2*b*c*math.cos(alpha))
+                            h3 = (2 * s) / c
+                            alpha = math.asin(h3 / b)
+                            a = math.sqrt((b ** 2) + (c ** 2) - 2 * b * c * math.cos(alpha))
                             threeSidesCalc(a, b, c)
                         elif bVal == "":
                             h3 = (2 * s) / c
@@ -462,9 +476,6 @@ def calcShape(shape):
                     b = p - a - c
                 elif cVal != "":
                     c = p - a - b
-
-
-
 
         def checkEnoughInformation():
             a = firstSideInput.get()
@@ -541,9 +552,9 @@ def calcShape(shape):
                                 font=(fontName, 15),
                                 command=lambda: deleteAllValues()
                                 )
-        buttonBack.grid(column = 0, row = 0, padx = 5, pady = 5)
-        buttonCalc.grid(column = 1, row = 0, padx = 5, pady = 5)
-        buttonTrash.grid(column = 2, row = 0, padx = 5, pady = 5)
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
 
         firstSideLabel = tk.Label(frameSides,
                                   text="Side a: ",
@@ -705,6 +716,8 @@ def calcShape(shape):
         betaInput.grid(column=1, row=1, padx=5, pady=15)
         gammaLabel.grid(column=0, row=2, pady=15)
         gammaInput.grid(column=1, row=2, padx=5, pady=15)
+
+
     elif shape == "rightTriangle":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -756,12 +769,42 @@ def calcShape(shape):
         frameAreas.grid(column=0, row=2, padx=15, pady=15)
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
+        def warningWithDelete(a = "There couldn't exist a triangle with dimensions"):
+            deleteAllValues()
+            messagebox.showwarning("Error with calculations",
+                                   a)
+
+        def diagramWindow(a, b):
+            top = Toplevel()
+            top.title('Shape diagram')
+
+            polygon1 = Polygon([(0, a), (b, 0), (0, 0)])
+
+            fig, ax = plt.subplots(1, 1)
+
+            ax.add_patch(polygon1)
+
+            plt.ylim(0, a)
+            plt.xlim(0, b)
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)
+
         def threeSidesCalc(a, b, c):
             if a == "" or b == "":
                 if a == "":
                     b = float(b)
                     c = float(c)
-                    a = math.sqrt(c**2 - b**2)
+                    print(b<0, c)
+
+                    if b<0 or c<0:
+                        warningWithDelete()
+                        return 0
+                    elif (b > c):
+                        warningWithDelete("C must be greater than b.")
+                        return 0
+                    a = math.sqrt(c ** 2 - b ** 2)
 
                     s = a * b / 2
                     p = a + b + c
@@ -773,6 +816,13 @@ def calcShape(shape):
                 elif b == "":
                     a = float(a)
                     c = float(c)
+                    if a < 0 or c < 0:
+                        warningWithDelete()
+                        return 0
+                    elif (a > c):
+                        warningWithDelete("C must be greater than b.")
+                        return 0
+
                     b = math.sqrt(c ** 2 - a ** 2)
 
                     s = a * b / 2
@@ -782,24 +832,35 @@ def calcShape(shape):
                     alpha = math.atan(a / b) * (180 / math.pi)
                     beta = 90 - alpha
             elif c == "":
-                a=float(a)
-                b=float(b)
+                a = float(a)
+                b = float(b)
 
-                s = a*b/2
-                c = math.sqrt(a**2 + b**2)
-                p = a+b+c
-                h = 2*s/c
+                if a < 0 or b < 0:
+                    warningWithDelete()
+                    return 0
 
-                alpha = math.atan(a/b) * (180 / math.pi)
+                s = a * b / 2
+                c = math.sqrt(a ** 2 + b ** 2)
+                p = a + b + c
+                h = 2 * s / c
+
+                alpha = math.atan(a / b) * (180 / math.pi)
                 beta = 90 - alpha
 
 
             else:
-                a=float(a)
-                b=float(b)
-                c=float(c)
+                a = float(a)
+                b = float(b)
+                c = float(c)
 
-                if(a**2 + b**2 != c**2):
+                if a<0 or b < 0 or c < 0:
+                    warningWithDelete()
+                    return 0
+                elif (b > c) or (a>c):
+                    warningWithDelete("C must be greater than b.")
+                    return 0
+
+                if (a ** 2 + b ** 2 != c ** 2):
                     perimeterInput.delete(0, tk.END)
                     areaInput.delete(0, tk.END)
                     heightInput.delete(0, tk.END)
@@ -815,11 +876,11 @@ def calcShape(shape):
                                            "There couldn't exist a triangle with such side lengths")
                     return 0
 
-                s = a*b/2
-                p = a+b+c
-                h = 2*s/c
+                s = a * b / 2
+                p = a + b + c
+                h = 2 * s / c
 
-                alpha = math.atan(a/b) * (180 / math.pi)
+                alpha = math.atan(a / b) * (180 / math.pi)
                 beta = 90 - alpha
 
             firstSideInput.delete(0, tk.END)
@@ -851,21 +912,7 @@ def calcShape(shape):
             alphaInput.configure(state="disabled")
             betaInput.configure(state="disabled")
 
-            polygon1 = Polygon([(0, a), (b, 0), (0,0), ])
-
-            fig, ax = plt.subplots(1, 1)
-
-            ax.add_patch(polygon1)
-
-            if a>=b:
-                maxl = math.ceil(a)
-            else:
-                maxl = math.ceil(b)
-
-            plt.ylim(0, maxl)
-            plt.xlim(0, maxl)
-            ax.set_aspect('equal', adjustable='box')
-            plt.show()
+            diagramWindow(a, b)
 
         def calculateTriangle():
             value = checkEnoughInformation()
@@ -907,47 +954,46 @@ def calcShape(shape):
                         gammaInput.configure(state="disabled")
 
                         messagebox.showwarning("Error with calculations",
-                                               "There couldn't exist a triangle with such side lengths")
+                                               "There couldn't exist a triangle with such dimensions")
                 elif value == 4:
-                    if (aVal!="" or bVal!=""):
-                        if sVal!="":
-                            if aVal!="":
-                                b = 2*s/a
+                    if (aVal != "" or bVal != ""):
+                        if sVal != "":
+                            if aVal != "":
+                                b = 2 * s / a
                                 c = ""
-                                threeSidesCalc(a,b,c)
+                                threeSidesCalc(a, b, c)
                             else:
                                 a = 2 * s / b
                                 c = ""
                                 threeSidesCalc(a, b, c)
-                        elif hVal!="":
+                        elif hVal != "":
                             if aVal != "":
-                                c1 = math.sqrt(a**2-h**2)
-                                c2 = h**2 / c1
-                                c = c1+c2
+                                c1 = math.sqrt(a ** 2 - h ** 2)
+                                c2 = h ** 2 / c1
+                                c = c1 + c2
 
-                                b = math.sqrt(c**2-a**2)
-                                threeSidesCalc(a,b,c)
+                                b = math.sqrt(c ** 2 - a ** 2)
+                                threeSidesCalc(a, b, c)
                             else:
-                                c = math.sqrt(b**2-h**2)
-                                a = math.sqrt(c**2-b**2)
-                                threeSidesCalc(a,b,c)
+                                c = math.sqrt(b ** 2 - h ** 2)
+                                a = math.sqrt(c ** 2 - b ** 2)
+                                threeSidesCalc(a, b, c)
                 else:
-                        print(0)
-                        if hVal == "":
-                            r = 2*s/p
-                            rR = (s-r**2)/(2*r)
+                    print(0)
+                    if hVal == "":
+                        r = 2 * s / p
+                        rR = (s - r ** 2) / (2 * r)
 
-                            c=rR*2
+                        c = rR * 2
 
-                            a = 0.5 * (c + 2*r + math.sqrt(c**2 - 4*c*r -4*r**2))
-                            b = math.sqrt(c**2 - a**2)
+                        a = 0.5 * (c + 2 * r + math.sqrt(c ** 2 - 4 * c * r - 4 * r ** 2))
+                        b = math.sqrt(c ** 2 - a ** 2)
 
-                            threeSidesCalc(a,b,c)
+                        threeSidesCalc(a, b, c)
             except:
                 deleteAllValues()
                 messagebox.showwarning("Error with calculations",
                                        "Please provide correct and/or more information")
-
 
         def checkEnoughInformation():
             a = firstSideInput.get()
@@ -1064,10 +1110,10 @@ def calcShape(shape):
                                     font=(fontName, 15),
                                     )
         heightInput = tk.Entry(frameHeight,
-                                    bd=5,
-                                    bg="#FFFFFF",
-                                    font=(fontName, 15),
-                                    )
+                               bd=5,
+                               bg="#FFFFFF",
+                               font=(fontName, 15),
+                               )
 
         firstHeightLabel.grid(column=0, row=0, pady=15)
         heightInput.grid(column=1, row=0, padx=5, pady=15)
