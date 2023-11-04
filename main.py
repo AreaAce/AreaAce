@@ -3,13 +3,10 @@ from tkinter import *
 from tkinter import messagebox
 import math
 
-import numpy as np
 from matplotlib.patches import Polygon
 import matplotlib.pyplot as plt
 
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
-                                               NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 
 window = tk.Tk()
 
@@ -111,7 +108,7 @@ def chooseShape(n):
                                       bd=5,
                                       bg="#FFFFFF",
                                       font=(fontName, 20, "bold"),
-
+                                      command=lambda: calcShape("isoTriangle")
                                       )
         equaTriangleButton = tk.Button(frameTriangles,
                                        text="Equilateral\nTriangle",
@@ -119,7 +116,7 @@ def chooseShape(n):
                                        bd=5,
                                        bg="#FFFFFF",
                                        font=(fontName, 20, "bold"),
-
+                                       command=lambda: calcShape("equTriangle")
                                        )
 
         triangleButton.grid(column=0, row=0, padx=15, pady=15)
@@ -165,20 +162,6 @@ def chooseShape(n):
                                   bg="#FFFFFF",
                                   font=(fontName, 20, "bold"),
                                   )
-        parallelogramButton = tk.Button(frameQuad,
-                                        text="Parallelogram",
-                                        activebackground="#EEEEEE",
-                                        bd=5,
-                                        bg="#FFFFFF",
-                                        font=(fontName, 20, "bold"),
-                                        )
-        trapezoidButton = tk.Button(frameQuad,
-                                    text="Trapezoid",
-                                    activebackground="#EEEEEE",
-                                    bd=5,
-                                    bg="#FFFFFF",
-                                    font=(fontName, 20, "bold"),
-                                    )
         rightTrapezoidButton = tk.Button(frameQuad,
                                          text="Right\nTrapezoid",
                                          activebackground="#EEEEEE",
@@ -193,22 +176,12 @@ def chooseShape(n):
                                        bg="#FFFFFF",
                                        font=(fontName, 20, "bold"),
                                        )
-        kiteButton = tk.Button(frameQuad,
-                               text="Kite",
-                               activebackground="#EEEEEE",
-                               bd=5,
-                               bg="#FFFFFF",
-                               font=(fontName, 20, "bold"),
-                               )
 
         squareButton.grid(column=0, row=0, padx=15, pady=15)
         rectangleButton.grid(column=1, row=0, padx=15, pady=15)
         rhombusButton.grid(column=0, row=1, padx=15, pady=15)
-        parallelogramButton.grid(column=1, row=1, padx=15, pady=15)
-        trapezoidButton.grid(column=0, row=2, padx=15, pady=15)
-        rightTrapezoidButton.grid(column=1, row=2, padx=15, pady=15)
-        isoTrapezoidButton.grid(column=0, row=3, padx=15, pady=15)
-        kiteButton.grid(column=1, row=3, padx=15, pady=15)
+        rightTrapezoidButton.grid(column=1, row=1, padx=15, pady=15)
+        isoTrapezoidButton.grid(column=0, columnspan = 2, row=2, padx=15, pady=15)
 
         frameCircles = Frame(window, width=500, height=300, bg='#DDDDDD')
         frameCircles.grid(column=0, row=2, padx=15, pady=15)
@@ -1196,6 +1169,702 @@ def calcShape(shape):
         gammaLabel.grid(column=0, row=2, pady=15)
         gammaInput.grid(column=1, row=2, padx=5, pady=15)
 
+
+    elif shape == "isoTriangle":
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+
+        frameTriangleDiagram = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameTriangleDiagram.columnconfigure(0, weight=1)
+        frameTriangleDiagram.columnconfigure(1, weight=1)
+        frameTriangleDiagram.rowconfigure(0, weight=1)
+        frameTriangleDiagram.rowconfigure(1, weight=1)
+
+        frameSides = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameSides.columnconfigure(0, weight=1)
+        frameSides.columnconfigure(1, weight=1)
+        frameSides.rowconfigure(0, weight=1)
+        frameSides.rowconfigure(1, weight=1)
+
+        frameHeight = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameHeight.columnconfigure(0, weight=1)
+        frameHeight.columnconfigure(1, weight=1)
+        frameHeight.rowconfigure(0, weight=1)
+        frameHeight.rowconfigure(1, weight=1)
+
+        frameAreas = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAreas.columnconfigure(0, weight=1)
+        frameAreas.columnconfigure(1, weight=1)
+        frameAreas.rowconfigure(0, weight=1)
+        frameAreas.rowconfigure(1, weight=1)
+
+        frameAngles = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAngles.columnconfigure(0, weight=1)
+        frameAngles.columnconfigure(1, weight=1)
+        frameAngles.rowconfigure(0, weight=1)
+        frameAngles.rowconfigure(1, weight=1)
+
+        frameTriangleDiagram.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+        frameSides.grid(column=0, row=1, padx=15, pady=15)
+        frameHeight.grid(column=1, row=1, padx=15, pady=15)
+        frameAreas.grid(column=0, row=2, padx=15, pady=15)
+        frameAngles.grid(column=1, row=2, padx=15, pady=15)
+
+        def diagramWindow(a, h1):
+            top = Toplevel()
+            top.title('Shape diagram')
+
+            polygon1 = Polygon([(0, 0), (a, 0), (a/2, h1)])
+
+            fig, ax = plt.subplots(1, 1)
+
+            ax.add_patch(polygon1)
+
+            plt.ylim(0, math.ceil(h1))
+            plt.xlim(0, math.ceil(a))
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def twoSidesCalc(a, b):
+            if a + b > b and b + b > a:
+                p = a + 2 * b
+                halfP = p / 2
+
+                firstSideInput.delete(0, tk.END)
+                secondSideInput.delete(0, tk.END)
+
+                firstSideInput.insert(0, str(a))
+                secondSideInput.insert(0, str(b))
+
+                perimeterInput.delete(0, tk.END)
+                perimeterInput.insert(0, str(p))
+
+                s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - b))
+                areaInput.delete(0, tk.END)
+                areaInput.insert(0, str(s))
+
+                h1 = s * 2 / a
+                h2 = s * 2 / b
+
+                firstHeightInput.delete(0, tk.END)
+                secondHeightInput.delete(0, tk.END)
+
+                firstHeightInput.insert(0, str(h1))
+                secondHeightInput.insert(0, str(h2))
+
+                alphaInput.configure(state="normal")
+                betaInput.configure(state="normal")
+
+                alphaInput.delete(0, tk.END)
+                betaInput.delete(0, tk.END)
+
+                alpha = math.acos(((b ** 2) + (b ** 2) - (a ** 2)) / (2 * b * b)) * (180.0 / math.pi)
+                beta = math.acos(((a ** 2) + (b ** 2) - (b ** 2)) / (2 * a * b)) * (180.0 / math.pi)
+
+                alphaInput.insert(0, str(alpha))
+                betaInput.insert(0, str(beta))
+
+                alphaInput.configure(state="disabled")
+                betaInput.configure(state="disabled")
+                diagramWindow(a, b, h1)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
+
+        def calculateTriangle():
+            value = checkEnoughInformation()
+            aVal = firstSideInput.get()
+            if aVal != "":
+                a = float(firstSideInput.get())
+            bVal = secondSideInput.get()
+            if bVal != "":
+                b = float(secondSideInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            pVal = perimeterInput.get()
+            if pVal != "":
+                p = float(perimeterInput.get())
+
+            if value == 1:
+                try:
+                    if a<0 or b<0:
+                        warningWithDelete()
+                    twoSidesCalc(a,b)
+                except:
+                    warningWithDelete()
+            elif value == 2:
+                if pVal != "":
+                    try:
+                        if aVal!="":
+                            if a<0 or p<0:
+                                warningWithDelete()
+                            b = (p-a)/2
+                            twoSidesCalc(a, b)
+                        elif bVal!="":
+                            if b<0 or p<0:
+                                warningWithDelete()
+                            a = p-2*b
+                            twoSidesCalc(a,b)
+                    except:
+                        warningWithDelete()
+                elif sVal != "":
+                    try:
+                        if aVal != "":
+                            if a < 0 or s < 0:
+                                warningWithDelete()
+                            h1 = 2*s/a
+                            b = math.sqrt((a/2)**2 + h1**2)
+                            twoSidesCalc(a, b)
+                        elif bVal != "":
+                            if b < 0 or s < 0:
+                                warningWithDelete()
+                            h2 = 2*s/b
+                            alpha = math.asin(h2/b)
+                            a = 2*b*math.sin((alpha)/2)
+                            twoSidesCalc(a, b)
+                    except:
+                        deleteAllValues()
+                        messagebox.showwarning("Error with calculations",
+                                               "There couldn't exist a triangle with dimensions")
+                else:
+                    try:
+                        return 0
+                    except:
+                        deleteAllValues()
+                        messagebox.showwarning("Error with calculations",
+                                               "There couldn't exist a triangle with dimensions")
+            else:
+                warningWithDelete("Not enough information")
+
+
+        def checkEnoughInformation():
+            a = firstSideInput.get()
+            b = secondSideInput.get()
+
+            numberOfSides = 0
+            if a != "":
+                numberOfSides += 1
+            if b != "":
+                numberOfSides += 1
+
+            h1 = firstHeightInput.get()
+            h2 = secondHeightInput.get()
+
+            numberOfHeights = 0
+            if h1 != "":
+                numberOfHeights += 1
+            if h2 != "":
+                numberOfHeights += 1
+
+            s = areaInput.get()
+            p = perimeterInput.get()
+
+            if numberOfSides >= 2:
+                return 1
+            elif numberOfSides >= 1 and (s != "" or p != ""):
+                return 2
+            else:
+                return 0
+
+        def deleteAllValues():
+            firstSideInput.delete(0, tk.END)
+            secondSideInput.delete(0, tk.END)
+            perimeterInput.delete(0, tk.END)
+            areaInput.delete(0, tk.END)
+            firstHeightInput.delete(0, tk.END)
+            secondHeightInput.delete(0, tk.END)
+
+            alphaInput.configure(state="normal")
+            betaInput.configure(state="normal")
+            alphaInput.delete(0, tk.END)
+            betaInput.delete(0, tk.END)
+            alphaInput.configure(state="disabled")
+            betaInput.configure(state="disabled")
+
+        buttonBack = tk.Button(frameTriangleDiagram,
+                               text="Go back",
+                               font=(fontName, 15),
+                               command=lambda: chooseShape(2)
+                               )
+        buttonCalc = tk.Button(frameTriangleDiagram,
+                               text="Calculate",
+                               font=(fontName, 15),
+                               command=lambda: calculateTriangle()
+                               )
+        buttonTrash = tk.Button(frameTriangleDiagram,
+                                text="Delete all values",
+                                font=(fontName, 15),
+                                command=lambda: deleteAllValues()
+                                )
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
+
+        firstSideLabel = tk.Label(frameSides,
+                                  text="Side a: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        firstSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        secondSideLabel = tk.Label(frameSides,
+                                   text="Side b (two sides): ",
+                                   bd=5,
+                                   bg='#DDDDDD',
+                                   font=(fontName, 15),
+                                   )
+        secondSideInput = tk.Entry(frameSides,
+                                   bd=5,
+                                   bg="#FFFFFF",
+                                   font=(fontName, 15),
+                                   )
+
+
+        firstSideLabel.grid(column=0, row=0, pady=15)
+        firstSideInput.grid(column=1, row=0, padx=5, pady=15)
+        secondSideLabel.grid(column=0, row=1, pady=15)
+        secondSideInput.grid(column=1, row=1, padx=5, pady=15)
+
+        firstHeightLabel = tk.Label(frameHeight,
+                                    text="Height on a: ",
+                                    bd=5,
+                                    bg='#DDDDDD',
+                                    font=(fontName, 15),
+                                    )
+        firstHeightInput = tk.Entry(frameHeight,
+                                    bd=5,
+                                    bg="#FFFFFF",
+                                    font=(fontName, 15),
+                                    )
+
+        secondHeightLabel = tk.Label(frameHeight,
+                                     text="Height on b: ",
+                                     bd=5,
+                                     bg='#DDDDDD',
+                                     font=(fontName, 15),
+                                     )
+        secondHeightInput = tk.Entry(frameHeight,
+                                     bd=5,
+                                     bg="#FFFFFF",
+                                     font=(fontName, 15),
+                                     )
+
+
+        firstHeightLabel.grid(column=0, row=0, pady=15)
+        firstHeightInput.grid(column=1, row=0, padx=5, pady=15)
+        secondHeightLabel.grid(column=0, row=1, pady=15)
+        secondHeightInput.grid(column=1, row=1, padx=5, pady=15)
+
+        areaLabel = tk.Label(frameAreas,
+                             text="Area: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        perimeterLabel = tk.Label(frameAreas,
+                                  text="Perimeter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        perimeterInput = tk.Entry(frameAreas,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        areaLabel.grid(column=0, row=0, pady=15)
+        areaInput.grid(column=1, row=0, padx=5, pady=15)
+        perimeterLabel.grid(column=0, row=1, pady=15)
+        perimeterInput.grid(column=1, row=1, padx=5, pady=15)
+
+        alphaLabel = tk.Label(frameAngles,
+                              text="Alpha angle: ",
+                              bd=5,
+                              bg='#DDDDDD',
+                              font=(fontName, 15),
+                              )
+        alphaInput = tk.Entry(frameAngles,
+                              name="alphaInput",
+                              bd=5,
+                              bg="#FFFFFF",
+                              font=(fontName, 15),
+                              state="disabled"
+                              )
+
+        betaLabel = tk.Label(frameAngles,
+                             text="Beta angle: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        betaInput = tk.Entry(frameAngles,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             state="disabled"
+                             )
+
+        alphaLabel.grid(column=0, row=0, pady=15)
+        alphaInput.grid(column=1, row=0, padx=5, pady=15)
+        betaLabel.grid(column=0, row=1, pady=15)
+        betaInput.grid(column=1, row=1, padx=5, pady=15)
+
+
+    elif shape == "equTriangle":
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+
+        frameTriangleDiagram = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameTriangleDiagram.columnconfigure(0, weight=1)
+        frameTriangleDiagram.columnconfigure(1, weight=1)
+        frameTriangleDiagram.rowconfigure(0, weight=1)
+        frameTriangleDiagram.rowconfigure(1, weight=1)
+
+        frameSides = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameSides.columnconfigure(0, weight=1)
+        frameSides.columnconfigure(1, weight=1)
+        frameSides.rowconfigure(0, weight=1)
+
+        frameHeight = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameHeight.columnconfigure(0, weight=1)
+        frameHeight.columnconfigure(1, weight=1)
+        frameHeight.rowconfigure(0, weight=1)
+        frameHeight.rowconfigure(1, weight=1)
+        frameHeight.rowconfigure(2, weight=1)
+
+        frameAreas = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAreas.columnconfigure(0, weight=1)
+        frameAreas.columnconfigure(1, weight=1)
+        frameAreas.rowconfigure(0, weight=1)
+        frameAreas.rowconfigure(1, weight=1)
+
+        frameAngles = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAngles.columnconfigure(0, weight=1)
+        frameAngles.columnconfigure(1, weight=1)
+        frameAngles.rowconfigure(0, weight=1)
+
+        frameTriangleDiagram.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+        frameSides.grid(column=0, row=1, padx=15, pady=15)
+        frameHeight.grid(column=1, row=1, padx=15, pady=15)
+        frameAreas.grid(column=0, row=2, padx=15, pady=15)
+        frameAngles.grid(column=1, row=2, padx=15, pady=15)
+
+        def diagramWindow(a, h1):
+            top = Toplevel()
+            top.title('Shape diagram')
+
+            polygon1 = Polygon([(0, 0), (a, 0), (a/2, h1)])
+
+            fig, ax = plt.subplots(1, 1)
+
+            ax.add_patch(polygon1)
+
+            plt.ylim(0, math.ceil(h1))
+            plt.xlim(0, math.ceil(a))
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def oneSideCalc(a):
+            if a>0:
+                p = 3*a
+                h = a * math.sqrt(3) / 2
+                s = a**2 * math.sqrt(3) / 4
+                r = a * math.sqrt(3) / 6
+                R = a * math.sqrt(3) / 3
+
+                firstSideInput.delete(0, tk.END)
+
+                firstSideInput.insert(0, str(a))
+
+                perimeterInput.delete(0, tk.END)
+                perimeterInput.insert(0, str(p))
+
+                areaInput.delete(0, tk.END)
+                areaInput.insert(0, str(s))
+
+                firstHeightInput.delete(0, tk.END)
+                firstHeightInput.insert(0, str(h))
+
+                inRadiusInput.delete(0, tk.END)
+                inRadiusInput.insert(0, str(r))
+                outRadiusInput.delete(0, tk.END)
+                outRadiusInput.insert(0, str(R))
+
+                diagramWindow(a,h)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
+
+        def calculateTriangle():
+            value = checkEnoughInformation()
+            aVal = firstSideInput.get()
+            if aVal != "":
+                a = float(firstSideInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            pVal = perimeterInput.get()
+            if pVal != "":
+                p = float(perimeterInput.get())
+            hVal = firstHeightInput.get()
+            if hVal != "":
+                h = float(firstHeightInput.get())
+            rVal = inRadiusInput.get()
+            if rVal != "":
+                r = float(inRadiusInput.get())
+            outRVal = outRadiusInput.get()
+            if outRVal != "":
+                R = float(outRadiusInput.get())
+
+
+            if value == 1:
+                try:
+                    if a<0:
+                        warningWithDelete()
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 2:
+                try:
+                    if h<0:
+                        warningWithDelete()
+                    a = 2*h*math.sqrt(3)/3
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 3:
+                try:
+                    if r<0:
+                        warningWithDelete()
+                    a = 2*math.sqrt(3)*r
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 4:
+                try:
+                    if R<0:
+                        warningWithDelete()
+                    a = math.sqrt(3) * R
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 5:
+                try:
+                    if s < 0:
+                        warningWithDelete()
+                    a = math.sqrt(4*s*math.sqrt(3)/3)
+                    oneSideCalc(a)
+
+                except:
+                    warningWithDelete()
+            elif value == 6:
+                try:
+                    if p<0:
+                        warningWithDelete()
+                    a = p/3
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            else:
+                warningWithDelete("Not enough information")
+
+
+        def checkEnoughInformation():
+            a = firstSideInput.get()
+            h = firstHeightInput.get()
+            r = inRadiusInput.get()
+            R = outRadiusInput.get()
+            s = areaInput.get()
+            p = perimeterInput.get()
+
+            if a!="":
+                return 1
+            elif h!="":
+                return 2
+            elif r!="":
+                return 3
+            elif R!="":
+                return 4
+            elif s!="":
+                return 5
+            elif p!="":
+                return 6
+            else:
+                return 0
+
+        def deleteAllValues():
+            firstSideInput.delete(0, tk.END)
+            perimeterInput.delete(0, tk.END)
+            areaInput.delete(0, tk.END)
+            firstHeightInput.delete(0, tk.END)
+            inRadiusInput.delete(0, tk.END)
+            outRadiusInput.delete(0, tk.END)
+
+
+        buttonBack = tk.Button(frameTriangleDiagram,
+                               text="Go back",
+                               font=(fontName, 15),
+                               command=lambda: chooseShape(2)
+                               )
+        buttonCalc = tk.Button(frameTriangleDiagram,
+                               text="Calculate",
+                               font=(fontName, 15),
+                               command=lambda: calculateTriangle()
+                               )
+        buttonTrash = tk.Button(frameTriangleDiagram,
+                                text="Delete all values",
+                                font=(fontName, 15),
+                                command=lambda: deleteAllValues()
+                                )
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
+
+        firstSideLabel = tk.Label(frameSides,
+                                  text="Side a: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        firstSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+
+
+        firstSideLabel.grid(column=0, row=0, pady=15)
+        firstSideInput.grid(column=1, row=0, padx=5, pady=15)
+
+        firstHeightLabel = tk.Label(frameHeight,
+                                    text="Height on a: ",
+                                    bd=5,
+                                    bg='#DDDDDD',
+                                    font=(fontName, 15),
+                                    )
+        firstHeightInput = tk.Entry(frameHeight,
+                                    bd=5,
+                                    bg="#FFFFFF",
+                                    font=(fontName, 15),
+                                    )
+        inRadiusLabel = tk.Label(frameHeight,
+                                    text="Inradius: ",
+                                    bd=5,
+                                    bg='#DDDDDD',
+                                    font=(fontName, 15),
+                                    )
+        inRadiusInput = tk.Entry(frameHeight,
+                                    bd=5,
+                                    bg="#FFFFFF",
+                                    font=(fontName, 15),
+                                    )
+        outRadiusLabel = tk.Label(frameHeight,
+                                    text="Circumradius: ",
+                                    bd=5,
+                                    bg='#DDDDDD',
+                                    font=(fontName, 15),
+                                    )
+        outRadiusInput = tk.Entry(frameHeight,
+                                    bd=5,
+                                    bg="#FFFFFF",
+                                    font=(fontName, 15),
+                                    )
+
+
+
+        firstHeightLabel.grid(column=0, row=0, pady=15)
+        firstHeightInput.grid(column=1, row=0, padx=5, pady=15)
+        inRadiusLabel.grid(column=0, row=1, pady=15)
+        inRadiusInput.grid(column=1, row=1, padx=5, pady=15)
+        outRadiusLabel.grid(column=0, row=2, pady=15)
+        outRadiusInput.grid(column=1, row=2, padx=5, pady=15)
+
+        areaLabel = tk.Label(frameAreas,
+                             text="Area: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        perimeterLabel = tk.Label(frameAreas,
+                                  text="Perimeter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        perimeterInput = tk.Entry(frameAreas,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        areaLabel.grid(column=0, row=0, pady=15)
+        areaInput.grid(column=1, row=0, padx=5, pady=15)
+        perimeterLabel.grid(column=0, row=1, pady=15)
+        perimeterInput.grid(column=1, row=1, padx=5, pady=15)
+
+        alphaLabel = tk.Label(frameAngles,
+                              text="Alpha angle: ",
+                              bd=5,
+                              bg='#DDDDDD',
+                              font=(fontName, 15),
+                              )
+        alphaInput = tk.Entry(frameAngles,
+                              name="alphaInput",
+                              bd=5,
+                              bg="#FFFFFF",
+                              font=(fontName, 15),
+                              state="disabled"
+                              )
+
+
+        alphaLabel.grid(column=0, row=0, pady=15)
+        alphaInput.grid(column=1, row=0, padx=5, pady=15)
+
+        alphaInput.configure(state="normal")
+        alphaInput.insert(0, str(60))
+        alphaInput.configure(state="disabled")
 
 dimensions()
 window.mainloop()
