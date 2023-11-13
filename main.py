@@ -1,17 +1,17 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
+
 import math
 
 from matplotlib.patches import Polygon
 import matplotlib.pyplot as plt
-
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
+from matplotlib.patches import Circle
+from matplotlib.patches import Ellipse
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 window = tk.Tk()
-
 fontName = "Arial"
-
 
 def dimensions():
     for widget in window.winfo_children():
@@ -125,7 +125,7 @@ def chooseShape(n):
         equaTriangleButton.grid(column=1, row=1, padx=15, pady=15)
 
         frameQuad = Frame(window, width=500, height=600, bg='#DDDDDD')
-        frameQuad.grid(column=1, row=1, rowspan=2, padx=15, pady=15)
+        frameQuad.grid(column=1, row=1, padx=15, pady=15)
 
         frameQuad.columnconfigure(0, weight=1)  # Center-align the first column
         frameQuad.columnconfigure(1, weight=1)
@@ -134,21 +134,15 @@ def chooseShape(n):
         frameQuad.rowconfigure(2, weight=1)
         frameQuad.rowconfigure(3, weight=1)
 
-        photo = PhotoImage(file=r"C:\Users\Atrur\Desktop\AreaAce\tri.png")
-        photoimage = photo.subsample(10, 10)
-
         squareButton = tk.Button(frameQuad,
                                  text="Square",
-                                 image=photoimage,
                                  compound=BOTTOM,
-                                 anchor=NW,
                                  activebackground="#EEEEEE",
                                  bd=5,
                                  bg="#FFFFFF",
                                  font=(fontName, 20, "bold"),
                                  command=lambda: calcShape("square")
                                  )
-        squareButton.image = photoimage
         rectangleButton = tk.Button(frameQuad,
                                     text="Rectangle",
                                     activebackground="#EEEEEE",
@@ -165,27 +159,10 @@ def chooseShape(n):
                                   font=(fontName, 20, "bold"),
                                   command=lambda: calcShape("rhombus")
                                   )
-        rightTrapezoidButton = tk.Button(frameQuad,
-                                         text="Right\nTrapezoid",
-                                         activebackground="#EEEEEE",
-                                         bd=5,
-                                         bg="#FFFFFF",
-                                         font=(fontName, 20, "bold"),
-
-                                         )
-        isoTrapezoidButton = tk.Button(frameQuad,
-                                       text="Isosceles\nTrapezoid",
-                                       activebackground="#EEEEEE",
-                                       bd=5,
-                                       bg="#FFFFFF",
-                                       font=(fontName, 20, "bold"),
-                                       )
 
         squareButton.grid(column=0, row=0, padx=15, pady=15)
         rectangleButton.grid(column=1, row=0, padx=15, pady=15)
-        rhombusButton.grid(column=0, row=1, padx=15, pady=15)
-        rightTrapezoidButton.grid(column=1, row=1, padx=15, pady=15)
-        isoTrapezoidButton.grid(column=0, columnspan = 2, row=2, padx=15, pady=15)
+        rhombusButton.grid(column=0, columnspan=2, row=1, padx=15, pady=15)
 
         frameCircles = Frame(window, width=500, height=300, bg='#DDDDDD')
         frameCircles.grid(column=0, row=2, padx=15, pady=15)
@@ -200,23 +177,52 @@ def chooseShape(n):
                                  bd=5,
                                  bg="#FFFFFF",
                                  font=(fontName, 20, "bold"),
+                                 command=lambda: calcShape("circle")
                                  )
-        elipseButton = tk.Button(frameCircles,
-                                 text="Elipse",
+        ellipseButton = tk.Button(frameCircles,
+                                 text="Ellipse",
                                  activebackground="#EEEEEE",
                                  bd=5,
                                  bg="#FFFFFF",
                                  font=(fontName, 20, "bold"),
+                                 command=lambda: calcShape("ellipse")
                                  )
 
         circleButton.grid(column=0, row=0, padx=15, pady=15)
-        elipseButton.grid(column=0, row=1, padx=15, pady=15)
+        ellipseButton.grid(column=0, row=1, padx=15, pady=15)
+
+        frameRegular = Frame(window, width=500, height=300, bg='#DDDDDD')
+        frameRegular.grid(column=1, row=2, padx=15, pady=15)
+
+        frameRegular.columnconfigure(0, weight=1)
+        frameRegular.columnconfigure(1, weight=1)
+        frameRegular.rowconfigure(0, weight=1)
+        frameRegular.rowconfigure(1, weight=1)
+
+        nRegularShape = tk.Button(frameRegular,
+                                 text="Sided regular polygon",
+                                 activebackground="#EEEEEE",
+                                 bd=5,
+                                 bg="#FFFFFF",
+                                 font=(fontName, 20, "bold"),
+                                 command=lambda: calcShape("polygon", nSideShapeInput.get())
+                                 )
+        nSideShapeInput = tk.Entry(frameRegular,
+                                  width=4,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+        nRegularShape.grid(column=1, row=0, padx=15, pady=15)
+        nSideShapeInput.grid(column=0, row=0, padx=15, pady=15)
+
+
 
     elif n == 3:
         return 0
 
 
-def calcShape(shape):
+def calcShape(shape, nSides=0):
     for widget in window.winfo_children():
         widget.destroy()
     if shape == "triangle":
@@ -277,7 +283,7 @@ def calcShape(shape):
 
         def diagramWindow(a, b, h2):
             top = Toplevel()
-            top.title('Shape diagram')
+            top.title('Triangle diagram')
 
             xPlot = math.sqrt(a ** 2 - h2 ** 2)
             polygon1 = Polygon([(0, 0), (b, 0), (xPlot, h2)])
@@ -297,30 +303,22 @@ def calcShape(shape):
             if a + b > c and a + c > b and b + c > a:
                 p = a + b + c
                 halfP = p / 2
+                s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - c))
+                h1 = s * 2 / a
+                h2 = s * 2 / b
+                h3 = s * 2 / c
+                alpha = math.acos(((b ** 2) + (c ** 2) - (a ** 2)) / (2 * b * c)) * (180.0 / math.pi)
+                beta = math.acos(((a ** 2) + (c ** 2) - (b ** 2)) / (2 * a * c)) * (180.0 / math.pi)
+                gamma = math.acos(((a ** 2) + (b ** 2) - (c ** 2)) / (2 * b * a)) * (180.0 / math.pi)
 
-                firstSideInput.delete(0, tk.END)
-                secondSideInput.delete(0, tk.END)
-                thirdSideInput.delete(0, tk.END)
+
+                deleteAllValues()
 
                 firstSideInput.insert(0, str(a))
                 secondSideInput.insert(0, str(b))
                 thirdSideInput.insert(0, str(c))
-
-                perimeterInput.delete(0, tk.END)
                 perimeterInput.insert(0, str(p))
-
-                s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - c))
-                areaInput.delete(0, tk.END)
                 areaInput.insert(0, str(s))
-
-                h1 = s * 2 / a
-                h2 = s * 2 / b
-                h3 = s * 2 / c
-
-                firstHeightInput.delete(0, tk.END)
-                secondHeightInput.delete(0, tk.END)
-                thirdHeightInput.delete(0, tk.END)
-
                 firstHeightInput.insert(0, str(h1))
                 secondHeightInput.insert(0, str(h2))
                 thirdHeightInput.insert(0, str(h3))
@@ -328,14 +326,6 @@ def calcShape(shape):
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
                 gammaInput.configure(state="normal")
-
-                alphaInput.delete(0, tk.END)
-                betaInput.delete(0, tk.END)
-                gammaInput.delete(0, tk.END)
-
-                alpha = math.acos(((b ** 2) + (c ** 2) - (a ** 2)) / (2 * b * c)) * (180.0 / math.pi)
-                beta = math.acos(((a ** 2) + (c ** 2) - (b ** 2)) / (2 * a * c)) * (180.0 / math.pi)
-                gamma = math.acos(((a ** 2) + (b ** 2) - (c ** 2)) / (2 * b * a)) * (180.0 / math.pi)
 
                 alphaInput.insert(0, str(alpha))
                 betaInput.insert(0, str(beta))
@@ -758,7 +748,7 @@ def calcShape(shape):
 
         def diagramWindow(a, b):
             top = Toplevel()
-            top.title('Shape diagram')
+            top.title('Triangle diagram')
 
             polygon1 = Polygon([(0, a), (b, 0), (0, 0)])
 
@@ -778,7 +768,6 @@ def calcShape(shape):
                 if a == "":
                     b = float(b)
                     c = float(c)
-                    print(b<0, c)
 
                     if b<0 or c<0:
                         warningWithDelete()
@@ -835,10 +824,10 @@ def calcShape(shape):
                 b = float(b)
                 c = float(c)
 
-                if a<0 or b < 0 or c < 0:
+                if a < 0 or b < 0 or c < 0:
                     warningWithDelete()
                     return 0
-                elif (b > c) or (a>c):
+                elif (b > c) or (a > c):
                     warningWithDelete("C must be greater than b.")
                     return 0
 
@@ -865,9 +854,6 @@ def calcShape(shape):
                 alpha = math.atan(a / b) * (180 / math.pi)
                 beta = 90 - alpha
 
-            firstSideInput.delete(0, tk.END)
-            secondSideInput.delete(0, tk.END)
-            thirdSideInput.delete(0, tk.END)
 
             firstSideInput.insert(0, str(a))
             secondSideInput.insert(0, str(b))
@@ -961,7 +947,6 @@ def calcShape(shape):
                                 a = math.sqrt(c ** 2 - b ** 2)
                                 threeSidesCalc(a, b, c)
                 else:
-                    print(0)
                     if hVal == "":
                         r = 2 * s / p
                         rR = (s - r ** 2) / (2 * r)
@@ -1005,7 +990,6 @@ def calcShape(shape):
             elif numberOfSides >= 1 and (s != "" or h != ""):
                 return 4
             else:
-                print(1)
                 return 0
 
         def deleteAllValues():
@@ -1234,7 +1218,7 @@ def calcShape(shape):
 
         def diagramWindow(a, h1):
             top = Toplevel()
-            top.title('Shape diagram')
+            top.title('Triangle diagram')
 
             polygon1 = Polygon([(0, 0), (a, 0), (a/2, h1)])
 
@@ -1253,41 +1237,25 @@ def calcShape(shape):
             if a + b > b and b + b > a:
                 p = a + 2 * b
                 halfP = p / 2
+                s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - b))
+                h1 = s * 2 / a
+                h2 = s * 2 / b
+                alpha = math.acos(((b ** 2) + (b ** 2) - (a ** 2)) / (2 * b * b)) * (180.0 / math.pi)
+                beta = math.acos(((a ** 2) + (b ** 2) - (b ** 2)) / (2 * a * b)) * (180.0 / math.pi)
 
-                firstSideInput.delete(0, tk.END)
-                secondSideInput.delete(0, tk.END)
+                deleteAllValues()
 
                 firstSideInput.insert(0, str(a))
                 secondSideInput.insert(0, str(b))
-
-                perimeterInput.delete(0, tk.END)
                 perimeterInput.insert(0, str(p))
-
-                s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - b))
-                areaInput.delete(0, tk.END)
                 areaInput.insert(0, str(s))
-
-                h1 = s * 2 / a
-                h2 = s * 2 / b
-
-                firstHeightInput.delete(0, tk.END)
-                secondHeightInput.delete(0, tk.END)
-
                 firstHeightInput.insert(0, str(h1))
                 secondHeightInput.insert(0, str(h2))
 
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
-
-                alphaInput.delete(0, tk.END)
-                betaInput.delete(0, tk.END)
-
-                alpha = math.acos(((b ** 2) + (b ** 2) - (a ** 2)) / (2 * b * b)) * (180.0 / math.pi)
-                beta = math.acos(((a ** 2) + (b ** 2) - (b ** 2)) / (2 * a * b)) * (180.0 / math.pi)
-
                 alphaInput.insert(0, str(alpha))
                 betaInput.insert(0, str(beta))
-
                 alphaInput.configure(state="disabled")
                 betaInput.configure(state="disabled")
                 diagramWindow(a, b, h1)
@@ -1597,7 +1565,7 @@ def calcShape(shape):
 
         def diagramWindow(a, h1):
             top = Toplevel()
-            top.title('Shape diagram')
+            top.title('Triangle diagram')
 
             polygon1 = Polygon([(0, 0), (a, 0), (a/2, h1)])
 
@@ -1620,22 +1588,13 @@ def calcShape(shape):
                 r = a * math.sqrt(3) / 6
                 R = a * math.sqrt(3) / 3
 
-                firstSideInput.delete(0, tk.END)
+                deleteAllValues()
 
                 firstSideInput.insert(0, str(a))
-
-                perimeterInput.delete(0, tk.END)
                 perimeterInput.insert(0, str(p))
-
-                areaInput.delete(0, tk.END)
                 areaInput.insert(0, str(s))
-
-                firstHeightInput.delete(0, tk.END)
                 firstHeightInput.insert(0, str(h))
-
-                inRadiusInput.delete(0, tk.END)
                 inRadiusInput.insert(0, str(r))
-                outRadiusInput.delete(0, tk.END)
                 outRadiusInput.insert(0, str(R))
 
                 diagramWindow(a,h)
@@ -1928,14 +1887,14 @@ def calcShape(shape):
         frameAreas.grid(column=0, row=2, padx=15, pady=15)
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
-        def warningWithDelete(a = "There couldn't exist a triangle with dimensions"):
+        def warningWithDelete(a = "There couldn't exist a square with such dimensions"):
             deleteAllValues()
             messagebox.showwarning("Error with calculations",
                                    a)
 
         def diagramWindow(a):
             top = Toplevel()
-            top.title('Shape diagram')
+            top.title('Square diagram')
 
             polygon1 = Polygon([(0, 0), (a, 0), (a, a), (0, a)])
 
@@ -1958,21 +1917,13 @@ def calcShape(shape):
                 r = a / 2
                 R = d / 2
 
-                firstSideInput.delete(0, tk.END)
+                deleteAllValues()
+
                 firstSideInput.insert(0, str(a))
-
-                perimeterInput.delete(0, tk.END)
                 perimeterInput.insert(0, str(p))
-
-                areaInput.delete(0, tk.END)
                 areaInput.insert(0, str(s))
-
-                firstDiagonal.delete(0, tk.END)
                 firstDiagonal.insert(0, str(d))
-
-                inRadiusInput.delete(0, tk.END)
                 inRadiusInput.insert(0, str(r))
-                outRadiusInput.delete(0, tk.END)
                 outRadiusInput.insert(0, str(R))
 
                 diagramWindow(a)
@@ -2267,14 +2218,14 @@ def calcShape(shape):
         frameAreas.grid(column=0, row=2, padx=15, pady=15)
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
-        def warningWithDelete(a = "There couldn't exist a triangle with dimensions"):
+        def warningWithDelete(a = "There couldn't exist a rectangle with such dimensions"):
             deleteAllValues()
             messagebox.showwarning("Error with calculations",
                                    a)
 
         def diagramWindow(a,b):
             top = Toplevel()
-            top.title('Shape diagram')
+            top.title('Rectangle diagram')
 
             polygon1 = Polygon([(0, 0), (a, 0), (a, b), (0, b)])
 
@@ -2297,26 +2248,16 @@ def calcShape(shape):
                 alpha = math.atan(b/a) * (180 / math.pi)
                 beta = math.atan(a/b) * (180 / math.pi)
 
-                firstSideInput.delete(0, tk.END)
+                deleteAllValues()
+
                 firstSideInput.insert(0, str(a))
-
-                secondSideInput.delete(0, tk.END)
                 secondSideInput.insert(0, str(b))
-
-                perimeterInput.delete(0, tk.END)
                 perimeterInput.insert(0, str(p))
-
-                areaInput.delete(0, tk.END)
                 areaInput.insert(0, str(s))
-
-                firstDiagonal.delete(0, tk.END)
                 firstDiagonal.insert(0, str(d))
 
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
-
-                alphaInput.delete(0, tk.END)
-                betaInput.delete(0, tk.END)
 
                 alphaInput.insert(0, str(alpha))
                 betaInput.insert(0, str(beta))
@@ -2422,7 +2363,7 @@ def calcShape(shape):
                     warningWithDelete()
             elif value == 7:
                 try:
-                    if p<0 or d < 0:
+                    if p < 0 or d < 0:
                         warningWithDelete()
                     s = (p**2 - 4*d**2) / 8
                     a = (p / 2 + math.sqrt((p ** 2) / 4 - 4 * s)) / 2
@@ -2652,14 +2593,14 @@ def calcShape(shape):
         frameAreas.grid(column=0, row=2, padx=15, pady=15)
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
-        def warningWithDelete(a = "There couldn't exist a triangle with dimensions"):
+        def warningWithDelete(a = "There couldn't exist a rhombus with such dimensions"):
             deleteAllValues()
             messagebox.showwarning("Error with calculations",
                                    a)
 
         def diagramWindow(a,h):
             top = Toplevel()
-            top.title('Shape diagram')
+            top.title('Rhombus diagram')
 
             x = math.sqrt(a**2 - h**2)
             xlimit = a + x
@@ -2687,28 +2628,17 @@ def calcShape(shape):
                 d2 = 2 * a * math.sin(alpha/2)
                 alpha = alpha * (180 / math.pi)
 
-                firstSideInput.delete(0, tk.END)
+                deleteAllValues()
+
                 firstSideInput.insert(0, str(a))
-                firstHeightInput.delete(0, tk.END)
                 firstHeightInput.insert(0, str(h))
-
-                perimeterInput.delete(0, tk.END)
                 perimeterInput.insert(0, str(p))
-
-                areaInput.delete(0, tk.END)
                 areaInput.insert(0, str(s))
-
-                firstDiagonal.delete(0, tk.END)
                 firstDiagonal.insert(0, str(d1))
-                secondDiagonal.delete(0, tk.END)
                 secondDiagonal.insert(0, str(d2))
-
 
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
-
-                alphaInput.delete(0, tk.END)
-                betaInput.delete(0, tk.END)
 
                 alphaInput.insert(0, str(alpha))
                 betaInput.insert(0, str(beta))
@@ -2745,7 +2675,6 @@ def calcShape(shape):
 
 
             if value == 1:
-                print(a,h)
                 try:
                     if pVal != "":
                         if p < 0:
@@ -2845,7 +2774,6 @@ def calcShape(shape):
                 try:
                     if d2 < 0 or d1 < 0:
                         warningWithDelete()
-                    print(d1, d2)
                     a = math.sqrt((d1/2)**2 + (d2/2)**2)
 
                     s = d1 * d2 / 2
@@ -3056,6 +2984,769 @@ def calcShape(shape):
         betaLabel.grid(column=0, row=1, pady=15)
         betaInput.grid(column=1, row=1, padx=5, pady=15)
 
+
+    elif shape == "circle":
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+
+        frameMenu = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameMenu.columnconfigure(0, weight=1)
+        frameMenu.columnconfigure(1, weight=1)
+        frameMenu.rowconfigure(0, weight=1)
+        frameMenu.rowconfigure(1, weight=1)
+
+        frameSides = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameSides.columnconfigure(0, weight=1)
+        frameSides.columnconfigure(1, weight=1)
+        frameSides.rowconfigure(0, weight=1)
+
+        frameAreas = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAreas.columnconfigure(0, weight=1)
+        frameAreas.columnconfigure(1, weight=1)
+        frameAreas.rowconfigure(0, weight=1)
+        frameAreas.rowconfigure(1, weight=1)
+
+        frameMenu.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+        frameSides.grid(column=0, row=1, padx=15, pady=15)
+        frameAreas.grid(column=0, row=2, padx=15, pady=15)
+
+        def warningWithDelete(a = "There couldn't exist a circle with such dimensions"):
+            deleteAllValues()
+            messagebox.showwarning("Error with calculations",
+                                   a)
+
+        def diagramWindow(r):
+            top = Toplevel()
+            top.title('Circle diagram')
+
+            circle = Circle((0, 0), r)
+
+
+            fig, ax = plt.subplots(1, 1)
+            ax.add_patch(circle)
+
+            plt.xlim(-r, r)
+            plt.ylim(-r, r)
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def radiusCalc(r):
+            if r > 0:
+                p = 2 * r * math.pi
+                d = 2 * r
+                s = r ** 2 * math.pi
+
+                deleteAllValues()
+
+                firstSideInput.insert(0, str(r))
+                perimeterInput.insert(0, str(p))
+                areaInput.insert(0, str(s))
+                secondSideInput.insert(0, str(d))
+
+                diagramWindow(r)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
+
+        def calculateSquare():
+            value = checkEnoughInformation()
+            rVal = firstSideInput.get()
+            if rVal != "":
+                r = float(firstSideInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            pVal = perimeterInput.get()
+            if pVal != "":
+                p = float(perimeterInput.get())
+            dVal = secondSideInput.get()
+            if dVal != "":
+                d = float(secondSideInput.get())
+
+
+            if value == 1:
+                try:
+                    if r<0:
+                        warningWithDelete()
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 2:
+                try:
+                    if d<0:
+                        warningWithDelete()
+                    r = d / 2
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 3:
+                try:
+                    if s<0:
+                        warningWithDelete()
+                    r = math.sqrt(s/math.pi)
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 4:
+                try:
+                    if p<0:
+                        warningWithDelete()
+                    r = p / (2*math.pi)
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            else:
+                warningWithDelete("Not enough information")
+
+
+        def checkEnoughInformation():
+            r = firstSideInput.get()
+            d = secondSideInput.get()
+            s = areaInput.get()
+            p = perimeterInput.get()
+
+            if r!="":
+                return 1
+            elif d!="":
+                return 2
+            elif s!="":
+                return 3
+            elif p!="":
+                return 4
+            else:
+                return 0
+
+        def deleteAllValues():
+            firstSideInput.delete(0, tk.END)
+            perimeterInput.delete(0, tk.END)
+            areaInput.delete(0, tk.END)
+            secondSideInput.delete(0, tk.END)
+
+
+        buttonBack = tk.Button(frameMenu,
+                               text="Go back",
+                               font=(fontName, 15),
+                               command=lambda: chooseShape(2)
+                               )
+        buttonCalc = tk.Button(frameMenu,
+                               text="Calculate",
+                               font=(fontName, 15),
+                               command=lambda: calculateSquare()
+                               )
+        buttonTrash = tk.Button(frameMenu,
+                                text="Delete all values",
+                                font=(fontName, 15),
+                                command=lambda: deleteAllValues()
+                                )
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
+
+        firstSideLabel = tk.Label(frameSides,
+                                  text="Radius: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        firstSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+        diameterLabel = tk.Label(frameSides,
+                                  text="Diameter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        secondSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+
+        firstSideLabel.grid(column=0, row=0, pady=15)
+        firstSideInput.grid(column=1, row=0, padx=5, pady=15)
+        diameterLabel.grid(column=0, row=1, pady=15)
+        secondSideInput.grid(column=1, row=1, padx=5, pady=15)
+
+        areaLabel = tk.Label(frameAreas,
+                             text="Area: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        perimeterLabel = tk.Label(frameAreas,
+                                  text="Perimeter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        perimeterInput = tk.Entry(frameAreas,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        areaLabel.grid(column=0, row=0, pady=15)
+        areaInput.grid(column=1, row=0, padx=5, pady=15)
+        perimeterLabel.grid(column=0, row=1, pady=15)
+        perimeterInput.grid(column=1, row=1, padx=5, pady=15)
+
+
+    elif shape == "ellipse":
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+
+        frameMenu = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameMenu.columnconfigure(0, weight=1)
+        frameMenu.columnconfigure(1, weight=1)
+        frameMenu.rowconfigure(0, weight=1)
+        frameMenu.rowconfigure(1, weight=1)
+
+        frameSides = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameSides.columnconfigure(0, weight=1)
+        frameSides.columnconfigure(1, weight=1)
+        frameSides.rowconfigure(0, weight=1)
+
+        frameAreas = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAreas.columnconfigure(0, weight=1)
+        frameAreas.columnconfigure(1, weight=1)
+        frameAreas.rowconfigure(0, weight=1)
+        frameAreas.rowconfigure(1, weight=1)
+
+        frameMenu.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+        frameSides.grid(column=0, row=1, padx=15, pady=15)
+        frameAreas.grid(column=0, row=2, padx=15, pady=15)
+
+        def warningWithDelete(a = "There couldn't exist a ellipse with such dimensions"):
+            deleteAllValues()
+            messagebox.showwarning("Error with calculations",
+                                   a)
+
+        def diagramWindow(a, b):
+            top = Toplevel()
+            top.title('Ellipse diagram')
+
+            ellipse = Ellipse((0, 0), 2*a, 2*b)
+
+
+            fig, ax = plt.subplots(1, 1)
+            ax.add_patch(ellipse)
+
+            plt.xlim(-a, a)
+            plt.ylim(-b, b)
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def sidesCalc(a,b):
+            if a > 0 and b > 0:
+                p = math.pi * (3*(a+b)/2 - math.sqrt(a*b))
+                s = a * b * math.pi
+
+                deleteAllValues()
+
+                firstSideInput.insert(0, str(a))
+
+                secondSideInput.insert(0, str(b))
+
+                perimeterInput.configure(state="normal")
+                perimeterInput.insert(0, str(p))
+                perimeterInput.configure(state="disabled")
+
+                areaInput.insert(0, str(s))
+
+
+                diagramWindow(a,b)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
+
+        def calculateSquare():
+            value = checkEnoughInformation()
+            aVal = firstSideInput.get()
+            if aVal != "":
+                a = float(firstSideInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            bVal = secondSideInput.get()
+            if bVal != "":
+                b = float(secondSideInput.get())
+
+
+            if value == 1:
+                try:
+                    if a<0 or b<0:
+                        warningWithDelete()
+                    sidesCalc(a,b)
+                except:
+                    warningWithDelete()
+            elif value == 2:
+                try:
+                    if a<0 or s<0:
+                        warningWithDelete()
+                    b = s/(math.pi * a)
+                    sidesCalc(a,b)
+                except:
+                    warningWithDelete()
+            elif value == 3:
+                try:
+                    if b<0 or s<0:
+                        warningWithDelete()
+                    a = s / (math.pi * b)
+                    sidesCalc(a, b)
+                except:
+                    warningWithDelete()
+            else:
+                warningWithDelete("Not enough information")
+
+
+        def checkEnoughInformation():
+            a = firstSideInput.get()
+            b = secondSideInput.get()
+            s = areaInput.get()
+
+            if a!="" and b!="":
+                return 1
+            elif a!="" and s!="":
+                return 2
+            elif b!="" and s!="":
+                return 3
+            else:
+                return 0
+
+        def deleteAllValues():
+            firstSideInput.delete(0, tk.END)
+            perimeterInput.configure(state="normal")
+            perimeterInput.delete(0, tk.END)
+            perimeterInput.configure(state="disabled")
+            areaInput.delete(0, tk.END)
+            secondSideInput.delete(0, tk.END)
+
+
+        buttonBack = tk.Button(frameMenu,
+                               text="Go back",
+                               font=(fontName, 15),
+                               command=lambda: chooseShape(2)
+                               )
+        buttonCalc = tk.Button(frameMenu,
+                               text="Calculate",
+                               font=(fontName, 15),
+                               command=lambda: calculateSquare()
+                               )
+        buttonTrash = tk.Button(frameMenu,
+                                text="Delete all values",
+                                font=(fontName, 15),
+                                command=lambda: deleteAllValues()
+                                )
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
+
+        firstSideLabel = tk.Label(frameSides,
+                                  text="Semi-major axis: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        firstSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+        secondSideLabel = tk.Label(frameSides,
+                                  text="Semi-minor axis: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        secondSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+
+        firstSideLabel.grid(column=0, row=0, pady=15)
+        firstSideInput.grid(column=1, row=0, padx=5, pady=15)
+        secondSideLabel.grid(column=0, row=1, pady=15)
+        secondSideInput.grid(column=1, row=1, padx=5, pady=15)
+
+        areaLabel = tk.Label(frameAreas,
+                             text="Area: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        perimeterLabel = tk.Label(frameAreas,
+                                  text="Perimeter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        perimeterInput = tk.Entry(frameAreas,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        areaLabel.grid(column=0, row=0, pady=15)
+        areaInput.grid(column=1, row=0, padx=5, pady=15)
+        perimeterLabel.grid(column=0, row=1, pady=15)
+        perimeterInput.grid(column=1, row=1, padx=5, pady=15)
+
+        perimeterInput.configure(state="disabled")
+
+
+    elif shape == "polygon":
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+
+        frameMenu = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameMenu.columnconfigure(0, weight=1)
+        frameMenu.columnconfigure(1, weight=1)
+        frameMenu.rowconfigure(0, weight=1)
+        frameMenu.rowconfigure(1, weight=1)
+
+        frameSides = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameSides.columnconfigure(0, weight=1)
+        frameSides.columnconfigure(1, weight=1)
+        frameSides.rowconfigure(0, weight=1)
+
+        frameAreas = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAreas.columnconfigure(0, weight=1)
+        frameAreas.columnconfigure(1, weight=1)
+        frameAreas.rowconfigure(0, weight=1)
+        frameAreas.rowconfigure(1, weight=1)
+
+        frameRadius = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameRadius.columnconfigure(0, weight=1)
+        frameRadius.columnconfigure(1, weight=1)
+        frameRadius.rowconfigure(0, weight=1)
+        frameRadius.rowconfigure(1, weight=1)
+
+        frameAngles = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAngles.columnconfigure(0, weight=1)
+        frameAngles.columnconfigure(1, weight=1)
+        frameAngles.rowconfigure(0, weight=1)
+
+        frameMenu.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+        frameSides.grid(column=0, row=1, padx=15, pady=15)
+        frameRadius.grid(column=1, row=1, padx=15, pady=15)
+        frameAreas.grid(column=0, row=2, padx=15, pady=15)
+        frameAngles.grid(column=1, row=2, padx=15, pady=15)
+
+        def warningWithDelete(a = "There couldn't exist a square with such dimensions"):
+            deleteAllValues()
+            messagebox.showwarning("Error with calculations",
+                                   a)
+
+        def diagramWindow(a):
+            n = int(nSides)
+            top = Toplevel()
+            top.title(str(n) + '-sided regular polygon diagram')
+
+            fig, ax = plt.subplots(1, 1)
+
+            vertices = []
+            i = 0
+
+            # Calculate the coordinates of the vertices using a while loop
+            while i < n:
+                x = a * math.cos(2 * math.pi * i / n) + a
+                y = a * math.sin(2 * math.pi * i / n) + a
+                vertices.append((x, y))
+                i += 1
+
+            vertices.append(vertices[0])  # Connect the last vertex to the first to close the polygon
+
+            # Create a Polygon patch and add it to the axis
+            polygon = Polygon(vertices)
+
+            ax.add_patch(polygon)
+
+            # Set the axis limits and aspect ratio
+            plt.xlim(0, 2*a)
+            plt.ylim(0, 2*a)
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def oneSideCalc(a):
+            n = int(nSides)
+            if a > 0:
+                p = a * n
+                s = (n * a**2) / (4 * math.tan(math.pi / n))
+                r = a / (2 * math.tan(math.pi / n))
+                R = a / (2 * math.sin(math.pi / n))
+
+                deleteAllValues()
+
+                firstSideInput.insert(0, str(a))
+                perimeterInput.insert(0, str(p))
+                areaInput.insert(0, str(s))
+                inRadiusInput.insert(0, str(r))
+                outRadiusInput.insert(0, str(R))
+
+                diagramWindow(a)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
+
+        def calculateSquare():
+            value = checkEnoughInformation()
+            aVal = firstSideInput.get()
+            if aVal != "":
+                a = float(firstSideInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            pVal = perimeterInput.get()
+            if pVal != "":
+                p = float(perimeterInput.get())
+            rVal = inRadiusInput.get()
+            if rVal != "":
+                r = float(inRadiusInput.get())
+            RVal = outRadiusInput.get()
+            if RVal != "":
+                R = float(outRadiusInput.get())
+
+            n = int(nSides)
+
+            if value == 1:
+                try:
+                    if a<0:
+                        warningWithDelete()
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 2:
+                try:
+                    if s<0:
+                        warningWithDelete()
+                    a = math.sqrt((4 * s * math.tan(math.pi / n)) / n)
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 3:
+                try:
+                    if p<0:
+                        warningWithDelete()
+                    a = p / n
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 4:
+                try:
+                    if r<0:
+                        warningWithDelete()
+                    a = 2 * r * math.sin(math.pi / n)
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 5:
+                try:
+                    if R<0:
+                        warningWithDelete()
+                    a = 2 * R * math.sin(math.pi / n)
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            else:
+                warningWithDelete("Not enough information")
+
+
+        def checkEnoughInformation():
+            a = firstSideInput.get()
+            s = areaInput.get()
+            p = perimeterInput.get()
+            r = inRadiusInput.get()
+            R = outRadiusInput.get()
+
+            if a!="":
+                return 1
+            elif s!="":
+                return 2
+            elif p!="":
+                return 3
+            elif r!="":
+                return 4
+            elif R!="":
+                return 5
+            else:
+                return 0
+
+        def deleteAllValues():
+            firstSideInput.delete(0, tk.END)
+            perimeterInput.delete(0, tk.END)
+            areaInput.delete(0, tk.END)
+            inRadiusInput.delete(0, tk.END)
+            outRadiusInput.delete(0, tk.END)
+
+
+        buttonBack = tk.Button(frameMenu,
+                               text="Go back",
+                               font=(fontName, 15),
+                               command=lambda: chooseShape(2)
+                               )
+        buttonCalc = tk.Button(frameMenu,
+                               text="Calculate",
+                               font=(fontName, 15),
+                               command=lambda: calculateSquare()
+                               )
+        buttonTrash = tk.Button(frameMenu,
+                                text="Delete all values",
+                                font=(fontName, 15),
+                                command=lambda: deleteAllValues()
+                                )
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
+
+        firstSideLabel = tk.Label(frameSides,
+                                  text="Side a: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        firstSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+
+
+        firstSideLabel.grid(column=0, row=0, pady=15)
+        firstSideInput.grid(column=1, row=0, padx=5, pady=15)
+
+
+        areaLabel = tk.Label(frameAreas,
+                             text="Area: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        perimeterLabel = tk.Label(frameAreas,
+                                  text="Perimeter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        perimeterInput = tk.Entry(frameAreas,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        areaLabel.grid(column=0, row=0, pady=15)
+        areaInput.grid(column=1, row=0, padx=5, pady=15)
+        perimeterLabel.grid(column=0, row=1, pady=15)
+        perimeterInput.grid(column=1, row=1, padx=5, pady=15)
+
+        inRadiusLabel = tk.Label(frameRadius,
+                             text="In-radius: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        inRadiusInput = tk.Entry(frameRadius,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        outRadiusLabel = tk.Label(frameRadius,
+                                  text="Out-radius: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        outRadiusInput = tk.Entry(frameRadius,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        inRadiusLabel.grid(column=0, row=0, pady=15)
+        inRadiusInput.grid(column=1, row=0, padx=5, pady=15)
+        outRadiusLabel.grid(column=0, row=1, pady=15)
+        outRadiusInput.grid(column=1, row=1, padx=5, pady=15)
+
+        alphaLabel = tk.Label(frameAngles,
+                              text="Alpha angle: ",
+                              bd=5,
+                              bg='#DDDDDD',
+                              font=(fontName, 15),
+                              )
+        alphaInput = tk.Entry(frameAngles,
+                              name="alphaInput",
+                              bd=5,
+                              bg="#FFFFFF",
+                              font=(fontName, 15),
+                              state="disabled"
+                              )
+
+
+        alphaLabel.grid(column=0, row=0, pady=15)
+        alphaInput.grid(column=1, row=0, padx=5, pady=15)
+
+        if int(nSides)<=4:
+            warningWithDelete("Please input proper number of sides, which is more than 4")
+            chooseShape(2)
+            return 0
+
+        alphaInput.configure(state="normal")
+        alphaInput.insert(0, str((int(nSides) - 2) * 180 / int(nSides)))
+        alphaInput.configure(state="disabled")
 
 dimensions()
 window.mainloop()
