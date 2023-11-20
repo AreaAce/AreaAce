@@ -39,22 +39,22 @@ def dimensions():
 
     twoDButton = tk.Button(
         text="2D",
-        width=15,
-        height=6,
+        width=10,
+        height=3,
         activebackground="#EEEEEE",
         bd=5,
         bg="#FFFFFF",
-        font=(fontName, 25, "bold"),
+        font=(fontName, 40, "bold"),
         command=lambda: chooseShape(2)
     )
     threeDButton = tk.Button(
         text="3D",
-        width=15,
-        height=6,
+        width=10,
+        height=3,
         activebackground="#EEEEEE",
         bd=5,
         bg="#FFFFFF",
-        font=(fontName, 25, "bold"),
+        font=(fontName, 40, "bold"),
         command=lambda: chooseShape(3)
     )
     twoDButton.grid(column=0, row=2, padx=15, pady=15)
@@ -69,17 +69,26 @@ def chooseShape(n):
         window.columnconfigure(0, weight=1)  # Center-align the first column
         window.columnconfigure(1, weight=1)
         window.rowconfigure(0, weight=1)
-        window.rowconfigure(1, weight=3)
+        window.rowconfigure(1, weight=1)
         window.rowconfigure(2, weight=3)
+        window.rowconfigure(3, weight=3)
 
         chooseShape = tk.Label(
             text="Choose the shape:",
             font=(fontName, 25)
         )
-        chooseShape.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+
+        backButton = tk.Button(
+                                text="Go back",
+                                font=(fontName, 15),
+                                command=lambda: dimensions()
+                              )
+
+        chooseShape.grid(column=0, columnspan=2,  row=1, padx=15, pady=15)
+        backButton.grid(column=0, columnspan=2,  row=0, padx=15, pady=15)
 
         frameTriangles = Frame(window, width=500, height=300, bg='#DDDDDD')
-        frameTriangles.grid(column=0, row=1, padx=15, pady=15)
+        frameTriangles.grid(column=0, row=2, padx=15, pady=15)
 
         frameTriangles.columnconfigure(0, weight=1)  # Center-align the first column
         frameTriangles.columnconfigure(1, weight=1)
@@ -125,7 +134,7 @@ def chooseShape(n):
         equaTriangleButton.grid(column=1, row=1, padx=15, pady=15)
 
         frameQuad = Frame(window, width=500, height=600, bg='#DDDDDD')
-        frameQuad.grid(column=1, row=1, padx=15, pady=15)
+        frameQuad.grid(column=1, row=2, padx=15, pady=15)
 
         frameQuad.columnconfigure(0, weight=1)  # Center-align the first column
         frameQuad.columnconfigure(1, weight=1)
@@ -165,7 +174,7 @@ def chooseShape(n):
         rhombusButton.grid(column=0, columnspan=2, row=1, padx=15, pady=15)
 
         frameCircles = Frame(window, width=500, height=300, bg='#DDDDDD')
-        frameCircles.grid(column=0, row=2, padx=15, pady=15)
+        frameCircles.grid(column=0, row=3, padx=15, pady=15)
 
         frameCircles.columnconfigure(0, weight=1)
         frameCircles.rowconfigure(0, weight=1)
@@ -192,7 +201,7 @@ def chooseShape(n):
         ellipseButton.grid(column=0, row=1, padx=15, pady=15)
 
         frameRegular = Frame(window, width=500, height=300, bg='#DDDDDD')
-        frameRegular.grid(column=1, row=2, padx=15, pady=15)
+        frameRegular.grid(column=1, row=3, padx=15, pady=15)
 
         frameRegular.columnconfigure(0, weight=1)
         frameRegular.columnconfigure(1, weight=1)
@@ -219,7 +228,60 @@ def chooseShape(n):
 
 
     elif n == 3:
-        return 0
+        for widget in window.winfo_children():
+            widget.destroy()
+
+        window.columnconfigure(0, weight=1)  # Center-align the first column
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+
+        chooseShape = tk.Label(
+            text="Choose the shape:",
+            font=(fontName, 25)
+        )
+
+        backButton = tk.Button(
+            text="Go back",
+            font=(fontName, 15),
+            command=lambda: dimensions()
+        )
+
+        chooseShape.grid(column=0, columnspan=2, row=1, padx=15, pady=15)
+        backButton.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+
+        frame3d = Frame(window, width=750, height=400, bg='#DDDDDD')
+        frame3d.grid(column=0, row=2, padx=15, pady=15)
+
+        frame3d.columnconfigure(0, weight=1)  # Center-align the first column
+        frame3d.columnconfigure(1, weight=1)
+        frame3d.rowconfigure(0, weight=1)
+        frame3d.rowconfigure(1, weight=1)
+
+        triangleButton = tk.Button(frame3d,
+                                   text="Sphere",
+                                   width=10,
+                                   height=3,
+                                   activebackground="#EEEEEE",
+                                   bd=5,
+                                   bg="#FFFFFF",
+                                   font=(fontName, 40, "bold"),
+                                   command=lambda: calcShape("sphere")
+                                   )
+        rightTriangleButton = tk.Button(frame3d,
+                                        text="Cube",
+                                        width=10,
+                                        height=3,
+                                        activebackground="#EEEEEE",
+                                        bd=5,
+                                        bg="#FFFFFF",
+                                        font=(fontName, 40, "bold"),
+                                        command=lambda: calcShape("cube")
+                                        )
+
+        triangleButton.grid(column=0, row=0, padx=15, pady=15)
+        rightTriangleButton.grid(column=1, row=0, padx=15, pady=15)
+
 
 
 def calcShape(shape, nSides=0):
@@ -1932,7 +1994,7 @@ def calcShape(shape, nSides=0):
                 messagebox.showwarning("Error with calculations",
                                        "There couldn't exist a triangle with such dimensions")
 
-        def calculateSquare():
+        def calculateShape():
             value = checkEnoughInformation()
             aVal = firstSideInput.get()
             if aVal != "":
@@ -2047,7 +2109,7 @@ def calcShape(shape, nSides=0):
         buttonCalc = tk.Button(frameMenu,
                                text="Calculate",
                                font=(fontName, 15),
-                               command=lambda: calculateSquare()
+                               command=lambda: calculateShape()
                                )
         buttonTrash = tk.Button(frameMenu,
                                 text="Delete all values",
@@ -2271,7 +2333,7 @@ def calcShape(shape, nSides=0):
                 messagebox.showwarning("Error with calculations",
                                        "There couldn't exist a triangle with such dimensions")
 
-        def calculateSquare():
+        def calculateShape():
             value = checkEnoughInformation()
             aVal = firstSideInput.get()
             if aVal != "":
@@ -2424,7 +2486,7 @@ def calcShape(shape, nSides=0):
         buttonCalc = tk.Button(frameMenu,
                                text="Calculate",
                                font=(fontName, 15),
-                               command=lambda: calculateSquare()
+                               command=lambda: calculateShape()
                                )
         buttonTrash = tk.Button(frameMenu,
                                 text="Delete all values",
@@ -2652,7 +2714,7 @@ def calcShape(shape, nSides=0):
                 messagebox.showwarning("Error with calculations",
                                        "There couldn't exist a triangle with such dimensions")
 
-        def calculateSquare():
+        def calculateShape():
             value = checkEnoughInformation()
             aVal = firstSideInput.get()
             if aVal != "":
@@ -2854,7 +2916,7 @@ def calcShape(shape, nSides=0):
         buttonCalc = tk.Button(frameMenu,
                                text="Calculate",
                                font=(fontName, 15),
-                               command=lambda: calculateSquare()
+                               command=lambda: calculateShape()
                                )
         buttonTrash = tk.Button(frameMenu,
                                 text="Delete all values",
@@ -3057,7 +3119,7 @@ def calcShape(shape, nSides=0):
                 messagebox.showwarning("Error with calculations",
                                        "There couldn't exist a triangle with such dimensions")
 
-        def calculateSquare():
+        def calculateShape():
             value = checkEnoughInformation()
             rVal = firstSideInput.get()
             if rVal != "":
@@ -3140,7 +3202,7 @@ def calcShape(shape, nSides=0):
         buttonCalc = tk.Button(frameMenu,
                                text="Calculate",
                                font=(fontName, 15),
-                               command=lambda: calculateSquare()
+                               command=lambda: calculateShape()
                                )
         buttonTrash = tk.Button(frameMenu,
                                 text="Delete all values",
@@ -3287,7 +3349,7 @@ def calcShape(shape, nSides=0):
                 messagebox.showwarning("Error with calculations",
                                        "There couldn't exist a triangle with such dimensions")
 
-        def calculateSquare():
+        def calculateShape():
             value = checkEnoughInformation()
             aVal = firstSideInput.get()
             if aVal != "":
@@ -3358,7 +3420,7 @@ def calcShape(shape, nSides=0):
         buttonCalc = tk.Button(frameMenu,
                                text="Calculate",
                                font=(fontName, 15),
-                               command=lambda: calculateSquare()
+                               command=lambda: calculateShape()
                                )
         buttonTrash = tk.Button(frameMenu,
                                 text="Delete all values",
@@ -3535,7 +3597,7 @@ def calcShape(shape, nSides=0):
                 messagebox.showwarning("Error with calculations",
                                        "There couldn't exist a triangle with such dimensions")
 
-        def calculateSquare():
+        def calculateShape():
             value = checkEnoughInformation()
             aVal = firstSideInput.get()
             if aVal != "":
@@ -3634,7 +3696,7 @@ def calcShape(shape, nSides=0):
         buttonCalc = tk.Button(frameMenu,
                                text="Calculate",
                                font=(fontName, 15),
-                               command=lambda: calculateSquare()
+                               command=lambda: calculateShape()
                                )
         buttonTrash = tk.Button(frameMenu,
                                 text="Delete all values",
@@ -3747,6 +3809,630 @@ def calcShape(shape, nSides=0):
         alphaInput.configure(state="normal")
         alphaInput.insert(0, str((int(nSides) - 2) * 180 / int(nSides)))
         alphaInput.configure(state="disabled")
+
+
+    elif shape == "sphere":
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+
+        frameMenu = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameMenu.columnconfigure(0, weight=1)
+        frameMenu.columnconfigure(1, weight=1)
+        frameMenu.rowconfigure(0, weight=1)
+        frameMenu.rowconfigure(1, weight=1)
+
+        frameSides = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameSides.columnconfigure(0, weight=1)
+        frameSides.columnconfigure(1, weight=1)
+        frameSides.rowconfigure(0, weight=1)
+
+        frameAreas = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAreas.columnconfigure(0, weight=1)
+        frameAreas.columnconfigure(1, weight=1)
+        frameAreas.rowconfigure(0, weight=1)
+        frameAreas.rowconfigure(1, weight=1)
+        frameAreas.rowconfigure(2, weight=1)
+        frameAreas.rowconfigure(3, weight=1)
+
+        frameMenu.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+        frameSides.grid(column=0, row=1, padx=15, pady=15)
+        frameAreas.grid(column=0, row=2, padx=15, pady=15)
+
+        def warningWithDelete(a = "There couldn't exist a circle with such dimensions"):
+            deleteAllValues()
+            messagebox.showwarning("Error with calculations",
+                                   a)
+            return 0
+
+        def diagramWindow(r):
+            top = Toplevel()
+            top.title('Circle diagram')
+
+            circle = Circle((0, 0), r)
+
+
+            fig, ax = plt.subplots(1, 1)
+            ax.add_patch(circle)
+
+            plt.xlim(-r, r)
+            plt.ylim(-r, r)
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def radiusCalc(r):
+            if r > 0:
+                p = 2 * r * math.pi
+                d = 2 * r
+                sC = r ** 2 * math.pi
+                s = 4 * math.pi * (r ** 2)
+                v = 4/3 * math.pi * (r ** 3)
+
+                deleteAllValues()
+
+                firstSideInput.insert(0, str(r))
+                perimeterInput.insert(0, str(p))
+                areaInput.insert(0, str(s))
+                areaCircleInput.insert(0, str(sC))
+                secondSideInput.insert(0, str(d))
+                volumeInput.insert(0, str(v))
+
+                diagramWindow(r)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
+
+        def calculateShape():
+            value = checkEnoughInformation()
+            rVal = firstSideInput.get()
+            if rVal != "":
+                r = float(firstSideInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            pVal = perimeterInput.get()
+            if pVal != "":
+                p = float(perimeterInput.get())
+            dVal = secondSideInput.get()
+            if dVal != "":
+                d = float(secondSideInput.get())
+            sCVal = areaCircleInput.get()
+            if sCVal != "":
+                sC = float(areaCircleInput.get())
+            vVal = volumeInput.get()
+            if vVal != "":
+                v = float(volumeInput.get())
+
+
+            if value == 1:
+                try:
+                    if r<0:
+                        warningWithDelete()
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 2:
+                try:
+                    if d<0:
+                        warningWithDelete()
+                    r = d / 2
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 3:
+                try:
+                    if s<0:
+                        warningWithDelete()
+                    r = math.sqrt(s/(4 * math.pi))
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 4:
+                try:
+                    if p<0:
+                        warningWithDelete()
+                    r = p / (2*math.pi)
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 5:
+                try:
+                    if v<0:
+                        warningWithDelete()
+                    r = math.pow((3 * v)/(4 * math.pi), 1/3)
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            elif value == 6:
+                try:
+                    if sC<0:
+                        warningWithDelete()
+                    r = math.sqrt(sC/(math.pi))
+                    radiusCalc(r)
+                except:
+                    warningWithDelete()
+            else:
+                warningWithDelete("Not enough information")
+
+
+        def checkEnoughInformation():
+            r = firstSideInput.get()
+            d = secondSideInput.get()
+            s = areaInput.get()
+            p = perimeterInput.get()
+            v = volumeInput.get()
+            sC = areaCircleInput.get()
+
+            if r!="":
+                return 1
+            elif d!="":
+                return 2
+            elif s!="":
+                return 3
+            elif p!="":
+                return 4
+            elif v!="":
+                return 5
+            elif sC!="":
+                return 6
+            else:
+                return 0
+
+        def deleteAllValues():
+            firstSideInput.delete(0, tk.END)
+            perimeterInput.delete(0, tk.END)
+            areaInput.delete(0, tk.END)
+            secondSideInput.delete(0, tk.END)
+            volumeInput.delete(0, tk.END)
+            areaCircleInput.delete(0, tk.END)
+
+
+        buttonBack = tk.Button(frameMenu,
+                               text="Go back",
+                               font=(fontName, 15),
+                               command=lambda: chooseShape(3)
+                               )
+        buttonCalc = tk.Button(frameMenu,
+                               text="Calculate",
+                               font=(fontName, 15),
+                               command=lambda: calculateShape()
+                               )
+        buttonTrash = tk.Button(frameMenu,
+                                text="Delete all values",
+                                font=(fontName, 15),
+                                command=lambda: deleteAllValues()
+                                )
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
+
+        firstSideLabel = tk.Label(frameSides,
+                                  text="Radius: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        firstSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+        diameterLabel = tk.Label(frameSides,
+                                  text="Diameter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        secondSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+
+        firstSideLabel.grid(column=0, row=0, pady=15)
+        firstSideInput.grid(column=1, row=0, padx=5, pady=15)
+        diameterLabel.grid(column=0, row=1, pady=15)
+        secondSideInput.grid(column=1, row=1, padx=5, pady=15)
+
+        volumeLabel = tk.Label(frameAreas,
+                             text="Volume: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        volumeInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        areaLabel = tk.Label(frameAreas,
+                             text="Area: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        areaCircleLabel = tk.Label(frameAreas,
+                             text="Area of the circle: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaCircleInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        perimeterLabel = tk.Label(frameAreas,
+                                  text="Perimeter: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        perimeterInput = tk.Entry(frameAreas,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        volumeLabel.grid(column=0, row=0, pady=15)
+        volumeInput.grid(column=1, row=0, padx=5, pady=15)
+        areaLabel.grid(column=0, row=1, pady=15)
+        areaInput.grid(column=1, row=1, padx=5, pady=15)
+        areaCircleLabel.grid(column=0, row=2, pady=15)
+        areaCircleInput.grid(column=1, row=2, padx=5, pady=15)
+        perimeterLabel.grid(column=0, row=3, pady=15)
+        perimeterInput.grid(column=1, row=3, padx=5, pady=15)
+
+
+    elif shape == "cube":
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(0, weight=1)
+        window.rowconfigure(1, weight=1)
+        window.rowconfigure(2, weight=1)
+
+        frameMenu = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameMenu.columnconfigure(0, weight=1)
+        frameMenu.columnconfigure(1, weight=1)
+        frameMenu.rowconfigure(0, weight=1)
+        frameMenu.rowconfigure(1, weight=1)
+
+        frameSides = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameSides.columnconfigure(0, weight=1)
+        frameSides.columnconfigure(1, weight=1)
+        frameSides.rowconfigure(0, weight=1)
+
+        frameOthers = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameOthers.columnconfigure(0, weight=1)
+        frameOthers.columnconfigure(1, weight=1)
+        frameOthers.rowconfigure(0, weight=1)
+        frameOthers.rowconfigure(1, weight=1)
+
+        frameAreas = Frame(window, width=500, height=300, bg='#DDDDDD')
+
+        frameAreas.columnconfigure(0, weight=1)
+        frameAreas.columnconfigure(1, weight=1)
+        frameAreas.rowconfigure(0, weight=1)
+        frameAreas.rowconfigure(1, weight=1)
+        frameAreas.rowconfigure(2, weight=1)
+        frameAreas.rowconfigure(3, weight=1)
+
+
+        frameMenu.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+        frameSides.grid(column=0, row=1, padx=15, pady=15)
+        frameOthers.grid(column=1, row=1, padx=15, pady=15)
+        frameAreas.grid(column=0, row=2, columnspan=2, padx=15, pady=15)
+
+        def warningWithDelete(a = "There couldn't exist a cube with such dimensions"):
+            deleteAllValues()
+            messagebox.showwarning("Error with calculations",
+                                   a)
+
+        def diagramWindow(a):
+            top = Toplevel()
+            top.title('Square diagram')
+
+            polygon1 = Polygon([(0, 0), (a, 0), (a, a), (0, a)])
+
+            fig, ax = plt.subplots(1, 1)
+
+            ax.add_patch(polygon1)
+
+            plt.xlim(0, a)
+            plt.ylim(0, a)
+            ax.set_aspect('equal', adjustable='box')
+
+            canvas = FigureCanvasTkAgg(fig, master=top)
+            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+
+        def oneSideCalc(a):
+            if a > 0:
+                p = 4 * a
+                d = a * math.sqrt(3)
+                dF = a * math.sqrt(2)
+                sF = a ** 2
+                s = sF * 6
+                v = a ** 3
+
+                deleteAllValues()
+
+                firstSideInput.insert(0, str(a))
+                perimeterInput.insert(0, str(p))
+                areaInput.insert(0, str(s))
+                diagonalInput.insert(0, str(d))
+                faceDiagonalInput.insert(0, str(dF))
+                areaFaceInput.insert(0, str(sF))
+                volumeInput.insert(0, str(v))
+
+                diagramWindow(a)
+            else:
+                deleteAllValues()
+                messagebox.showwarning("Error with calculations",
+                                       "There couldn't exist a triangle with such dimensions")
+
+        def calculateShape():
+            value = checkEnoughInformation()
+            aVal = firstSideInput.get()
+            if aVal != "":
+                a = float(firstSideInput.get())
+            sVal = areaInput.get()
+            if sVal != "":
+                s = float(areaInput.get())
+            pVal = perimeterInput.get()
+            if pVal != "":
+                p = float(perimeterInput.get())
+            dVal = diagonalInput.get()
+            if dVal != "":
+                d = float(diagonalInput.get())
+            dFVal = faceDiagonalInput.get()
+            if dFVal != "":
+                dF = float(faceDiagonalInput.get())
+            vVal = volumeInput.get()
+            if vVal != "":
+                v = float(volumeInput.get())
+            sFVal = areaFaceInput.get()
+            if sFVal != "":
+                sF = float(areaFaceInput.get())
+
+            if value == 1:
+                try:
+                    if a<0:
+                        warningWithDelete()
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 2:
+                try:
+                    if d<0:
+                        warningWithDelete()
+                    a = d*math.sqrt(3)/3
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 3:
+                try:
+                    if dF<0:
+                        warningWithDelete()
+                    a = dF*math.sqrt(2)/2
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 4:
+                try:
+                    if v<0:
+                        warningWithDelete()
+                    a = math.pow(v, 1/3)
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 5:
+                try:
+                    if s < 0:
+                        warningWithDelete()
+                    a = math.sqrt(s/6)
+                    oneSideCalc(a)
+
+                except:
+                    warningWithDelete()
+            elif value == 6:
+                try:
+                    if p<0:
+                        warningWithDelete()
+                    a = p/4
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            elif value == 7:
+                try:
+                    if sF<0:
+                        warningWithDelete()
+                    a = math.sqrt(sF)
+                    oneSideCalc(a)
+                except:
+                    warningWithDelete()
+            else:
+                warningWithDelete("Not enough information")
+
+
+        def checkEnoughInformation():
+            a = firstSideInput.get()
+            d = diagonalInput.get()
+            dF = faceDiagonalInput.get()
+            v = volumeInput.get()
+            s = areaInput.get()
+            p = perimeterInput.get()
+            sF = areaFaceInput.get()
+
+
+            if a!="":
+                return 1
+            elif d!="":
+                return 2
+            elif dF!="":
+                return 3
+            elif v!="":
+                return 4
+            elif s!="":
+                return 5
+            elif p!="":
+                return 6
+            elif sF!="":
+                return 7
+            else:
+                return 0
+
+        def deleteAllValues():
+            firstSideInput.delete(0, tk.END)
+            perimeterInput.delete(0, tk.END)
+            volumeInput.delete(0, tk.END)
+            areaInput.delete(0, tk.END)
+            areaFaceInput.delete(0, tk.END)
+            diagonalInput.delete(0, tk.END)
+            faceDiagonalInput.delete(0, tk.END)
+
+
+        buttonBack = tk.Button(frameMenu,
+                               text="Go back",
+                               font=(fontName, 15),
+                               command=lambda: chooseShape(3)
+                               )
+        buttonCalc = tk.Button(frameMenu,
+                               text="Calculate",
+                               font=(fontName, 15),
+                               command=lambda: calculateShape()
+                               )
+        buttonTrash = tk.Button(frameMenu,
+                                text="Delete all values",
+                                font=(fontName, 15),
+                                command=lambda: deleteAllValues()
+                                )
+        buttonBack.grid(column=0, row=0, padx=5, pady=5)
+        buttonCalc.grid(column=1, row=0, padx=5, pady=5)
+        buttonTrash.grid(column=2, row=0, padx=5, pady=5)
+
+        firstSideLabel = tk.Label(frameSides,
+                                  text="Edge: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        firstSideInput = tk.Entry(frameSides,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+
+
+        firstSideLabel.grid(column=0, row=0, pady=15)
+        firstSideInput.grid(column=1, row=0, padx=5, pady=15)
+
+        diagonalLabel = tk.Label(frameOthers,
+                                    text="Space diagonal: ",
+                                    bd=5,
+                                    bg='#DDDDDD',
+                                    font=(fontName, 15),
+                                    )
+        diagonalInput = tk.Entry(frameOthers,
+                                    bd=5,
+                                    bg="#FFFFFF",
+                                    font=(fontName, 15),
+                                    )
+        faceDiagonalLabel = tk.Label(frameOthers,
+                                    text="Face diagonal: ",
+                                    bd=5,
+                                    bg='#DDDDDD',
+                                    font=(fontName, 15),
+                                    )
+        faceDiagonalInput = tk.Entry(frameOthers,
+                                    bd=5,
+                                    bg="#FFFFFF",
+                                    font=(fontName, 15),
+                                    )
+
+
+
+        diagonalLabel.grid(column=0, row=0, pady=15)
+        diagonalInput.grid(column=1, row=0, padx=5, pady=15)
+        faceDiagonalLabel.grid(column=0, row=1, pady=15)
+        faceDiagonalInput.grid(column=1, row=1, padx=5, pady=15)
+
+        volumeLabel = tk.Label(frameAreas,
+                             text="Volume: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        volumeInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        areaLabel = tk.Label(frameAreas,
+                             text="Area: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+        areaFaceLabel = tk.Label(frameAreas,
+                             text="Area of a face: ",
+                             bd=5,
+                             bg='#DDDDDD',
+                             font=(fontName, 15),
+                             )
+        areaFaceInput = tk.Entry(frameAreas,
+                             bd=5,
+                             bg="#FFFFFF",
+                             font=(fontName, 15),
+                             )
+
+        perimeterLabel = tk.Label(frameAreas,
+                                  text="Perimeter of face: ",
+                                  bd=5,
+                                  bg='#DDDDDD',
+                                  font=(fontName, 15),
+                                  )
+        perimeterInput = tk.Entry(frameAreas,
+                                  bd=5,
+                                  bg="#FFFFFF",
+                                  font=(fontName, 15),
+                                  )
+
+        volumeLabel.grid(column=0, row=0, pady=15)
+        volumeInput.grid(column=1, row=0, padx=5, pady=15)
+        areaLabel.grid(column=0, row=1, pady=15)
+        areaInput.grid(column=1, row=1, padx=5, pady=15)
+        areaFaceLabel.grid(column=0, row=2, pady=15)
+        areaFaceInput.grid(column=1, row=2, padx=5, pady=15)
+        perimeterLabel.grid(column=0, row=3, pady=15)
+        perimeterInput.grid(column=1, row=3, padx=5, pady=15)
+
 
 dimensions()
 window.mainloop()
