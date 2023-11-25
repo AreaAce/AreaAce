@@ -1,88 +1,70 @@
+"""
+pip install matplotlib
+pip install tkinter
+Matplotlib needed to plot diagrams of polygons
+tkinter needed for GUI
+"""
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
-
 import math
-
 from matplotlib.patches import Polygon
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 from matplotlib.patches import Ellipse
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-window = tk.Tk()
-fontName = "Arial"
+# Most of the code is GUI
+'''
+Some shortcuts for required content for assignment:
+variable declaration: 24 line (and a lot of other)
+arithmetic expression: 249 line
+use of if else: 45 line
+use of sequence types: 230 line
+use of for loop: 31 line
+use of while loop: 3071 line
+a function: 33 line
+output: GUI (278 line)
+'''
 
-def dimensions():
+window = tk.Tk()
+fontName = "Arial" # We assign a fontName variable a font, to be able to easily change it
+
+def dimensions(): # First function in the code is for the first window to appear in app, where the user will choose the dimensions
+    # By the next loop we clear everything in the existing window, so we can start from blank page
     for widget in window.winfo_children():
         widget.destroy()
 
-    window.columnconfigure(0, weight=1)  # Center-align the first column
+    # GUI: We make windows' grid
+    window.columnconfigure(0, weight=1)
     window.columnconfigure(1, weight=1)
     window.rowconfigure(0, weight=1)
     window.rowconfigure(1, weight=1)
     window.rowconfigure(2, weight=1)
 
-    greeting = tk.Label(
-        text="Hello to AreaAce!",
-        width=50,
-        height=3,
-        font=(fontName, 25)
-    )
-    greeting.grid(column=0, columnspan=2, row=0, padx=15, pady=15)
+    #GUI:
+    greeting = tk.Label(text="Hello to AreaAce!", width=50, height=3, font=(fontName, 25)).grid(column=0, columnspan=2,row=0, padx=15, pady=15)
+    chooseDimensions = tk.Label(text="Choose with which dimensions you want to work with:", font=(fontName, 15)).grid(column=0, columnspan=2, row=1, padx=15, pady=15)
 
-    chooseDimensions = tk.Label(
-        text="Choose with which dimensions you want to work with:",
-        font=(fontName, 15)
-    )
-    chooseDimensions.grid(column=0, columnspan=2, row=1, padx=15, pady=15)
+    # After clicking one of this buttons, it will start a funciton with a parameter
+    twoDButton = tk.Button(text="2D", width=10, height=3, activebackground="#EEEEEE", bd=5, bg="#FFFFFF", font=(fontName, 40, "bold"), command=lambda: chooseShape(2)).grid(column=0, row=2, padx=15, pady=15)
+    threeDButton = tk.Button(text="3D", width=10, height=3, activebackground="#EEEEEE", bd=5, bg="#FFFFFF", font=(fontName, 40, "bold"), command=lambda: chooseShape(3)).grid(column=1, row=2, padx=15, pady=15)
 
-    twoDButton = tk.Button(
-        text="2D",
-        width=10,
-        height=3,
-        activebackground="#EEEEEE",
-        bd=5,
-        bg="#FFFFFF",
-        font=(fontName, 40, "bold"),
-        command=lambda: chooseShape(2)
-    )
-    threeDButton = tk.Button(
-        text="3D",
-        width=10,
-        height=3,
-        activebackground="#EEEEEE",
-        bd=5,
-        bg="#FFFFFF",
-        font=(fontName, 40, "bold"),
-        command=lambda: chooseShape(3)
-    )
-    twoDButton.grid(column=0, row=2, padx=15, pady=15)
-    threeDButton.grid(column=1, row=2, padx=15, pady=15)
-
-
+#Second function, second page in our app, user will simply choose a shape in this page
 def chooseShape(n):
-    if n == 2:
-        for widget in window.winfo_children():
+    if n == 2: # When the user choose the 2nd dimension, we open 2nd dimensions shapes
+        for widget in window.winfo_children(): # As well as in the first page, we clear the page fully
             widget.destroy()
-
-        window.columnconfigure(0, weight=1)  # Center-align the first column
+        #GUI till line 174:
+        window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
         window.rowconfigure(0, weight=1)
         window.rowconfigure(1, weight=1)
         window.rowconfigure(2, weight=3)
         window.rowconfigure(3, weight=3)
 
-        chooseShape = tk.Label(
-            text="Choose the shape:",
-            font=(fontName, 25)
-        )
-
-        backButton = tk.Button(
-                                text="Go back",
-                                font=(fontName, 15),
-                                command=lambda: dimensions()
-                              )
+        chooseShape = tk.Label(text="Choose the shape:", font=(fontName, 25))
+        backButton = tk.Button(text="Go back", font=(fontName, 15), command=dimensions)
 
         chooseShape.grid(column=0, columnspan=2,  row=1, padx=15, pady=15)
         backButton.grid(column=0, columnspan=2,  row=0, padx=15, pady=15)
@@ -90,43 +72,15 @@ def chooseShape(n):
         frameTriangles = Frame(window, width=500, height=300, bg='#DDDDDD')
         frameTriangles.grid(column=0, row=2, padx=15, pady=15)
 
-        frameTriangles.columnconfigure(0, weight=1)  # Center-align the first column
+        frameTriangles.columnconfigure(0, weight=1)
         frameTriangles.columnconfigure(1, weight=1)
         frameTriangles.rowconfigure(0, weight=1)
         frameTriangles.rowconfigure(1, weight=1)
 
-        triangleButton = tk.Button(frameTriangles,
-                                   text="Triangle",
-                                   activebackground="#EEEEEE",
-                                   bd=5,
-                                   bg="#FFFFFF",
-                                   font=(fontName, 20, "bold"),
-                                   command=lambda: calcShape("triangle")
-                                   )
-        rightTriangleButton = tk.Button(frameTriangles,
-                                        text="Right\nTriangle",
-                                        activebackground="#EEEEEE",
-                                        bd=5,
-                                        bg="#FFFFFF",
-                                        font=(fontName, 20, "bold"),
-                                        command=lambda: calcShape("rightTriangle")
-                                        )
-        isoTriangleButton = tk.Button(frameTriangles,
-                                      text="Isosceles\nTriangle",
-                                      activebackground="#EEEEEE",
-                                      bd=5,
-                                      bg="#FFFFFF",
-                                      font=(fontName, 20, "bold"),
-                                      command=lambda: calcShape("isoTriangle")
-                                      )
-        equaTriangleButton = tk.Button(frameTriangles,
-                                       text="Equilateral\nTriangle",
-                                       activebackground="#EEEEEE",
-                                       bd=5,
-                                       bg="#FFFFFF",
-                                       font=(fontName, 20, "bold"),
-                                       command=lambda: calcShape("equTriangle")
-                                       )
+        triangleButton = tk.Button(frameTriangles, text="Triangle", activebackground="#EEEEEE", bd=5, bg="#FFFFFF",font=(fontName, 20, "bold"), command=lambda: calcShape("triangle"))
+        rightTriangleButton = tk.Button(frameTriangles, text="Right\nTriangle", activebackground="#EEEEEE", bd=5,bg="#FFFFFF", font=(fontName, 20, "bold"),command=lambda: calcShape("rightTriangle"))
+        isoTriangleButton = tk.Button(frameTriangles, text="Isosceles\nTriangle", activebackground="#EEEEEE", bd=5,bg="#FFFFFF", font=(fontName, 20, "bold"),command=lambda: calcShape("isoTriangle"))
+        equaTriangleButton = tk.Button(frameTriangles, text="Equilateral\nTriangle", activebackground="#EEEEEE", bd=5,bg="#FFFFFF", font=(fontName, 20, "bold"),command=lambda: calcShape("equTriangle"))
 
         triangleButton.grid(column=0, row=0, padx=15, pady=15)
         rightTriangleButton.grid(column=1, row=0, padx=15, pady=15)
@@ -136,38 +90,16 @@ def chooseShape(n):
         frameQuad = Frame(window, width=500, height=600, bg='#DDDDDD')
         frameQuad.grid(column=1, row=2, padx=15, pady=15)
 
-        frameQuad.columnconfigure(0, weight=1)  # Center-align the first column
+        frameQuad.columnconfigure(0, weight=1)
         frameQuad.columnconfigure(1, weight=1)
         frameQuad.rowconfigure(0, weight=1)
         frameQuad.rowconfigure(1, weight=1)
         frameQuad.rowconfigure(2, weight=1)
         frameQuad.rowconfigure(3, weight=1)
 
-        squareButton = tk.Button(frameQuad,
-                                 text="Square",
-                                 compound=BOTTOM,
-                                 activebackground="#EEEEEE",
-                                 bd=5,
-                                 bg="#FFFFFF",
-                                 font=(fontName, 20, "bold"),
-                                 command=lambda: calcShape("square")
-                                 )
-        rectangleButton = tk.Button(frameQuad,
-                                    text="Rectangle",
-                                    activebackground="#EEEEEE",
-                                    bd=5,
-                                    bg="#FFFFFF",
-                                    font=(fontName, 20, "bold"),
-                                    command=lambda: calcShape("rectangle")
-                                    )
-        rhombusButton = tk.Button(frameQuad,
-                                  text="Rhombus",
-                                  activebackground="#EEEEEE",
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 20, "bold"),
-                                  command=lambda: calcShape("rhombus")
-                                  )
+        squareButton = tk.Button(frameQuad, text="Square", compound=BOTTOM, activebackground="#EEEEEE", bd=5,bg="#FFFFFF", font=(fontName, 20, "bold"), command=lambda: calcShape("square"))
+        rectangleButton = tk.Button(frameQuad, text="Rectangle", activebackground="#EEEEEE", bd=5, bg="#FFFFFF",font=(fontName, 20, "bold"), command=lambda: calcShape("rectangle"))
+        rhombusButton = tk.Button(frameQuad, text="Rhombus", activebackground="#EEEEEE", bd=5, bg="#FFFFFF",font=(fontName, 20, "bold"), command=lambda: calcShape("rhombus"))
 
         squareButton.grid(column=0, row=0, padx=15, pady=15)
         rectangleButton.grid(column=1, row=0, padx=15, pady=15)
@@ -180,22 +112,8 @@ def chooseShape(n):
         frameCircles.rowconfigure(0, weight=1)
         frameCircles.rowconfigure(1, weight=1)
 
-        circleButton = tk.Button(frameCircles,
-                                 text="Circle",
-                                 activebackground="#EEEEEE",
-                                 bd=5,
-                                 bg="#FFFFFF",
-                                 font=(fontName, 20, "bold"),
-                                 command=lambda: calcShape("circle")
-                                 )
-        ellipseButton = tk.Button(frameCircles,
-                                 text="Ellipse",
-                                 activebackground="#EEEEEE",
-                                 bd=5,
-                                 bg="#FFFFFF",
-                                 font=(fontName, 20, "bold"),
-                                 command=lambda: calcShape("ellipse")
-                                 )
+        circleButton = tk.Button(frameCircles, text="Circle", activebackground="#EEEEEE", bd=5, bg="#FFFFFF",font=(fontName, 20, "bold"), command=lambda: calcShape("circle"))
+        ellipseButton = tk.Button(frameCircles, text="Ellipse", activebackground="#EEEEEE", bd=5, bg="#FFFFFF",font=(fontName, 20, "bold"), command=lambda: calcShape("ellipse"))
 
         circleButton.grid(column=0, row=0, padx=15, pady=15)
         ellipseButton.grid(column=0, row=1, padx=15, pady=15)
@@ -208,20 +126,9 @@ def chooseShape(n):
         frameRegular.rowconfigure(0, weight=1)
         frameRegular.rowconfigure(1, weight=1)
 
-        nRegularShape = tk.Button(frameRegular,
-                                 text="Sided regular polygon",
-                                 activebackground="#EEEEEE",
-                                 bd=5,
-                                 bg="#FFFFFF",
-                                 font=(fontName, 20, "bold"),
-                                 command=lambda: calcShape("polygon", nSideShapeInput.get())
-                                 )
-        nSideShapeInput = tk.Entry(frameRegular,
-                                  width=4,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
+        nRegularShape = tk.Button(frameRegular, text="Sided regular polygon", activebackground="#EEEEEE", bd=5,bg="#FFFFFF", font=(fontName, 20, "bold"),command=lambda: calcShape("polygon", int(nSideShapeInput.get())))
+        nSideShapeInput = tk.Entry(frameRegular, width=4, bd=5, bg="#FFFFFF", font=(fontName, 15))
+
         nRegularShape.grid(column=1, row=0, padx=15, pady=15)
         nSideShapeInput.grid(column=0, row=0, padx=15, pady=15)
 
@@ -258,36 +165,22 @@ def chooseShape(n):
         frame3d.rowconfigure(0, weight=1)
         frame3d.rowconfigure(1, weight=1)
 
-        triangleButton = tk.Button(frame3d,
-                                   text="Sphere",
-                                   width=10,
-                                   height=3,
-                                   activebackground="#EEEEEE",
-                                   bd=5,
-                                   bg="#FFFFFF",
-                                   font=(fontName, 40, "bold"),
-                                   command=lambda: calcShape("sphere")
-                                   )
-        rightTriangleButton = tk.Button(frame3d,
-                                        text="Cube",
-                                        width=10,
-                                        height=3,
-                                        activebackground="#EEEEEE",
-                                        bd=5,
-                                        bg="#FFFFFF",
-                                        font=(fontName, 40, "bold"),
-                                        command=lambda: calcShape("cube")
-                                        )
+        sphereButton = tk.Button(frame3d, text="Sphere", width=10, height=3, activebackground="#EEEEEE", bd=5,bg="#FFFFFF", font=(fontName, 40, "bold"), command=lambda: calcShape("sphere"))
+        cubeButton = tk.Button(frame3d, text="Cube", width=10, height=3, activebackground="#EEEEEE", bd=5, bg="#FFFFFF",font=(fontName, 40, "bold"), command=lambda: calcShape("cube"))
 
-        triangleButton.grid(column=0, row=0, padx=15, pady=15)
-        rightTriangleButton.grid(column=1, row=0, padx=15, pady=15)
+        sphereButton.grid(column=0, row=0, padx=15, pady=15)
+        cubeButton.grid(column=1, row=0, padx=15, pady=15)
 
-
-
-def calcShape(shape, nSides=0):
+def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the shape
+    # We will do calculations in this function, it gets to arguments, shape: name of the shape. nSides: refers to amount of sides of n-sided right polygon
     for widget in window.winfo_children():
         widget.destroy()
-    if shape == "triangle":
+
+    if shape == "triangle": # We simply check for every single name and if the user choose triangle, we will run this code
+        # After this if, every other elif, looks similar to this, just, the other do calculations for
+        # other shapes. For example for circle, we need to only have radius, area and perimeter, wherese for
+        # triangle, we need to have much more dimensions
+        #GUI till 231 line
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
         window.rowconfigure(0, weight=1)
@@ -338,22 +231,28 @@ def calcShape(shape, nSides=0):
         frameAreas.grid(column=0, row=2, padx=15, pady=15)
         frameAngles.grid(column=1, row=2, padx=15, pady=15)
 
+        # Next function deletes the inputs, and throws a warning to user, to indicate we had a problem with calculations
         def warningWithDelete(a = "There couldn't exist a triangle with dimensions"):
             deleteAllValues()
             messagebox.showwarning("Error with calculations",
                                    a)
 
+        # Next function is to plot the diagram
         def diagramWindow(a, b, h2):
-            top = Toplevel()
+            # It gets as arguments two sides of triangle, and one of the heights
+            # We can notice that to plot any triangle, this three numbers are enough
+
+            top = Toplevel() # GUI: We create a new window
             top.title('Triangle diagram')
 
-            xPlot = math.sqrt(a ** 2 - h2 ** 2)
-            polygon1 = Polygon([(0, 0), (b, 0), (xPlot, h2)])
+            xPlot = math.sqrt(a ** 2 - h2 ** 2) # We calculate the offset of x of the triangle from the third point of triangle
+            polygon1 = Polygon([(0, 0), (b, 0), (xPlot, h2)]) # We create a polygon with the numbers we have
 
-            fig, ax = plt.subplots(1, 1)
+            fig, ax = plt.subplots(1, 1) # Give subplots of 1 and 1 for equal diagram
 
             ax.add_patch(polygon1)
-
+            #limits of diagram:
+            # we can notice that the height is basically limit for y, and second point for x
             plt.ylim(0, h2)
             plt.xlim(0, b)
             ax.set_aspect('equal', adjustable='box')
@@ -362,7 +261,11 @@ def calcShape(shape, nSides=0):
             canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
 
         def threeSidesCalc(a, b, c):
-            if a + b > c and a + c > b and b + c > a:
+        #This function is used to calculate all the dimensions of a triangle by three sides
+            if a + b > c and a + c > b and b + c > a: # By this line we check if the triangle could exist
+                # If no, it will throw an error (see the line where the function is called)
+
+                # We calculate everything:
                 p = a + b + c
                 halfP = p / 2
                 s = math.sqrt(halfP * (halfP - a) * (halfP - b) * (halfP - c))
@@ -373,9 +276,8 @@ def calcShape(shape, nSides=0):
                 beta = math.acos(((a ** 2) + (c ** 2) - (b ** 2)) / (2 * a * c)) * (180.0 / math.pi)
                 gamma = math.acos(((a ** 2) + (b ** 2) - (c ** 2)) / (2 * b * a)) * (180.0 / math.pi)
 
-
                 deleteAllValues()
-
+                # We delete and put the values to display to user
                 firstSideInput.insert(0, str(a))
                 secondSideInput.insert(0, str(b))
                 thirdSideInput.insert(0, str(c))
@@ -403,7 +305,10 @@ def calcShape(shape, nSides=0):
                                        "There couldn't exist a triangle with such dimensions")
 
         def calculateTriangle():
-            value = checkEnoughInformation()
+            # This function is needed to get all the information user gave us
+            # and bring it to form that we have all three sides, so we can call the previous function
+            # to calculate everything using 3 sides
+            value = checkEnoughInformation() #Here we check the information is enough or no, we call another function
             aVal = firstSideInput.get()
             if aVal != "":
                 a = float(firstSideInput.get())
@@ -429,30 +334,13 @@ def calcShape(shape, nSides=0):
             if pVal != "":
                 p = float(perimeterInput.get())
 
-            if value == 1:
+            if value == 1: # Value is telling, what information did the user gave us, so we can calculate everything efficiently
                 try:
                     threeSidesCalc(a, b, c)
                 except:
-                    perimeterInput.delete(0, tk.END)
-                    areaInput.delete(0, tk.END)
-                    firstHeightInput.delete(0, tk.END)
-                    secondHeightInput.delete(0, tk.END)
-                    thirdHeightInput.delete(0, tk.END)
+                    warningWithDelete()
 
-                    alphaInput.configure(state="normal")
-                    betaInput.configure(state="normal")
-                    gammaInput.configure(state="normal")
-                    alphaInput.delete(0, tk.END)
-                    betaInput.delete(0, tk.END)
-                    gammaInput.delete(0, tk.END)
-                    alphaInput.configure(state="disabled")
-                    betaInput.configure(state="disabled")
-                    gammaInput.configure(state="disabled")
-
-                    messagebox.showwarning("Error with calculations",
-                                           "There couldn't exist a triangle with such side lengths")
             elif value == 2:
-                # numberOfSides >= 2 and (numberOfHeights >= 1 or s != "" or p != "")
                 if h1Val != "" or h2Val != "" or h3Val != "":
                     return 0
                 elif sVal != "":
@@ -490,9 +378,9 @@ def calcShape(shape, nSides=0):
                         messagebox.showwarning("Error with calculations",
                                                "There couldn't exist a triangle with dimensions")
             elif value == 3:
-
                 if aVal != "":
-                    '''halfP = p / 2
+                    '''
+                    halfP = p / 2
                     pMinusA = halfP-a
                     print(pMinusA)
                     print("a = ", p*pMinusA)
@@ -503,7 +391,8 @@ def calcShape(shape, nSides=0):
                     b = ((p*(pMinusA**2)+(p**2)*pMinusA)+math.sqrt((discriminant)))/(2*p*pMinusA)
                     c = ((p*(pMinusA**2)-(p**2)*pMinusA)+math.sqrt((discriminant)))/(2*p*pMinusA)
                     print (b,c)
-                    threeSidesCalc(a,b,c)'''
+                    threeSidesCalc(a,b,c)
+                    '''
 
 
                 elif bVal != "":
@@ -515,7 +404,11 @@ def calcShape(shape, nSides=0):
             a = firstSideInput.get()
             b = secondSideInput.get()
             c = thirdSideInput.get()
-
+            # We basically check, what the user has given us, because for different inputs
+            # lets say 3 sides, and 2 sides and area, we need to have two various functions
+            # calculating the third side.
+            # We can see that for the first, we already have 3 sides. But for second one, we need
+            # to at first calculate, and only then call the function to calculate the triangle
             numberOfSides = 0
             if a != "":
                 numberOfSides += 1
@@ -551,80 +444,34 @@ def calcShape(shape, nSides=0):
                 else:
                     return 0
 
-        def deleteAllValues():
-            firstSideInput.delete(0, tk.END)
-            secondSideInput.delete(0, tk.END)
-            thirdSideInput.delete(0, tk.END)
-            perimeterInput.delete(0, tk.END)
-            areaInput.delete(0, tk.END)
-            firstHeightInput.delete(0, tk.END)
-            secondHeightInput.delete(0, tk.END)
-            thirdHeightInput.delete(0, tk.END)
+        def deleteAllValues(): # We delete every input from the page
+            for entry in [firstSideInput, secondSideInput, thirdSideInput, perimeterInput, areaInput, firstHeightInput,
+                          secondHeightInput, thirdHeightInput]:
+                entry.delete(0, tk.END)
 
-            alphaInput.configure(state="normal")
-            betaInput.configure(state="normal")
-            gammaInput.configure(state="normal")
-            alphaInput.delete(0, tk.END)
-            betaInput.delete(0, tk.END)
-            gammaInput.delete(0, tk.END)
-            alphaInput.configure(state="disabled")
-            betaInput.configure(state="disabled")
-            gammaInput.configure(state="disabled")
+            for entry in [alphaInput, betaInput, gammaInput]:
+                entry.configure(state="normal")
+                entry.delete(0, tk.END)
+                entry.configure(state="disabled")
 
-        buttonBack = tk.Button(frameTriangleDiagram,
-                               text="Go back",
-                               font=(fontName, 15),
-                               command=lambda: chooseShape(2)
-                               )
-        buttonCalc = tk.Button(frameTriangleDiagram,
-                               text="Calculate",
-                               font=(fontName, 15),
-                               command=lambda: calculateTriangle()
-                               )
-        buttonTrash = tk.Button(frameTriangleDiagram,
-                                text="Delete all values",
-                                font=(fontName, 15),
-                                command=lambda: deleteAllValues()
-                                )
+        buttonBack, buttonCalc, buttonTrash = (
+            tk.Button(frameTriangleDiagram, text="Go back", font=(fontName, 15), command=lambda: chooseShape(2)),
+            tk.Button(frameTriangleDiagram, text="Calculate", font=(fontName, 15), command=lambda: calculateTriangle()),
+            tk.Button(frameTriangleDiagram, text="Delete all values", font=(fontName, 15),command=lambda: deleteAllValues())
+        )
         buttonBack.grid(column=0, row=0, padx=5, pady=5)
         buttonCalc.grid(column=1, row=0, padx=5, pady=5)
         buttonTrash.grid(column=2, row=0, padx=5, pady=5)
 
-        firstSideLabel = tk.Label(frameSides,
-                                  text="Side a: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        firstSideInput = tk.Entry(frameSides,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
-
-        secondSideLabel = tk.Label(frameSides,
-                                   text="Side b: ",
-                                   bd=5,
-                                   bg='#DDDDDD',
-                                   font=(fontName, 15),
-                                   )
-        secondSideInput = tk.Entry(frameSides,
-                                   bd=5,
-                                   bg="#FFFFFF",
-                                   font=(fontName, 15),
-                                   )
-
-        thirdSideLabel = tk.Label(frameSides,
-                                  text="Side c: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        thirdSideInput = tk.Entry(frameSides,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
+        firstSideLabel, firstSideInput = tk.Label(frameSides, text="Side a: ", bd=5, bg='#DDDDDD',
+                                                  font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",
+                                                                                 font=(fontName, 15))
+        secondSideLabel, secondSideInput = tk.Label(frameSides, text="Side b: ", bd=5, bg='#DDDDDD',
+                                                    font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",
+                                                                                   font=(fontName, 15))
+        thirdSideLabel, thirdSideInput = tk.Label(frameSides, text="Side c: ", bd=5, bg='#DDDDDD',
+                                                  font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",
+                                                                                 font=(fontName, 15))
 
         firstSideLabel.grid(column=0, row=0, pady=15)
         firstSideInput.grid(column=1, row=0, padx=5, pady=15)
@@ -633,41 +480,15 @@ def calcShape(shape, nSides=0):
         thirdSideLabel.grid(column=0, row=2, pady=15)
         thirdSideInput.grid(column=1, row=2, padx=5, pady=15)
 
-        firstHeightLabel = tk.Label(frameHeight,
-                                    text="Height on a: ",
-                                    bd=5,
-                                    bg='#DDDDDD',
-                                    font=(fontName, 15),
-                                    )
-        firstHeightInput = tk.Entry(frameHeight,
-                                    bd=5,
-                                    bg="#FFFFFF",
-                                    font=(fontName, 15),
-                                    )
-
-        secondHeightLabel = tk.Label(frameHeight,
-                                     text="Height on b: ",
-                                     bd=5,
-                                     bg='#DDDDDD',
-                                     font=(fontName, 15),
-                                     )
-        secondHeightInput = tk.Entry(frameHeight,
-                                     bd=5,
-                                     bg="#FFFFFF",
-                                     font=(fontName, 15),
-                                     )
-
-        thirdHeightLabel = tk.Label(frameHeight,
-                                    text="Height on c: ",
-                                    bd=5,
-                                    bg='#DDDDDD',
-                                    font=(fontName, 15),
-                                    )
-        thirdHeightInput = tk.Entry(frameHeight,
-                                    bd=5,
-                                    bg="#FFFFFF",
-                                    font=(fontName, 15),
-                                    )
+        firstHeightLabel, firstHeightInput = tk.Label(frameHeight, text="Height on a: ", bd=5, bg='#DDDDDD',
+                                                      font=(fontName, 15)), tk.Entry(frameHeight, bd=5, bg="#FFFFFF",
+                                                                                     font=(fontName, 15))
+        secondHeightLabel, secondHeightInput = tk.Label(frameHeight, text="Height on b: ", bd=5, bg='#DDDDDD',
+                                                        font=(fontName, 15)), tk.Entry(frameHeight, bd=5, bg="#FFFFFF",
+                                                                                       font=(fontName, 15))
+        thirdHeightLabel, thirdHeightInput = tk.Label(frameHeight, text="Height on c: ", bd=5, bg='#DDDDDD',
+                                                      font=(fontName, 15)), tk.Entry(frameHeight, bd=5, bg="#FFFFFF",
+                                                                                     font=(fontName, 15))
 
         firstHeightLabel.grid(column=0, row=0, pady=15)
         firstHeightInput.grid(column=1, row=0, padx=5, pady=15)
@@ -676,73 +497,22 @@ def calcShape(shape, nSides=0):
         thirdHeightLabel.grid(column=0, row=2, pady=15)
         thirdHeightInput.grid(column=1, row=2, padx=5, pady=15)
 
-        areaLabel = tk.Label(frameAreas,
-                             text="Area: ",
-                             bd=5,
-                             bg='#DDDDDD',
-                             font=(fontName, 15),
-                             )
-        areaInput = tk.Entry(frameAreas,
-                             bd=5,
-                             bg="#FFFFFF",
-                             font=(fontName, 15),
-                             )
-
-        perimeterLabel = tk.Label(frameAreas,
-                                  text="Perimeter: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        perimeterInput = tk.Entry(frameAreas,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
+        areaLabel, areaInput = tk.Label(frameAreas, text="Area: ", bd=5, bg='#DDDDDD', font=(fontName, 15)), tk.Entry(frameAreas, bd=5, bg="#FFFFFF", font=(fontName, 15))
+        perimeterLabel, perimeterInput = tk.Label(frameAreas, text="Perimeter: ", bd=5, bg='#DDDDDD',
+                                                  font=(fontName, 15)), tk.Entry(frameAreas, bd=5, bg="#FFFFFF",
+                                                                                 font=(fontName, 15))
 
         areaLabel.grid(column=0, row=0, pady=15)
         areaInput.grid(column=1, row=0, padx=5, pady=15)
         perimeterLabel.grid(column=0, row=1, pady=15)
         perimeterInput.grid(column=1, row=1, padx=5, pady=15)
 
-        alphaLabel = tk.Label(frameAngles,
-                              text="Alpha angle: ",
-                              bd=5,
-                              bg='#DDDDDD',
-                              font=(fontName, 15),
-                              )
-        alphaInput = tk.Entry(frameAngles,
-                              name="alphaInput",
-                              bd=5,
-                              bg="#FFFFFF",
-                              font=(fontName, 15),
-                              state="disabled"
-                              )
-
-        betaLabel = tk.Label(frameAngles,
-                             text="Beta angle: ",
-                             bd=5,
-                             bg='#DDDDDD',
-                             font=(fontName, 15),
-                             )
-        betaInput = tk.Entry(frameAngles,
-                             bd=5,
-                             bg="#FFFFFF",
-                             font=(fontName, 15),
-                             state="disabled"
-                             )
-        gammaLabel = tk.Label(frameAngles,
-                              text="Gamma angle: ",
-                              bd=5,
-                              bg='#DDDDDD',
-                              font=(fontName, 15),
-                              )
-        gammaInput = tk.Entry(frameAngles,
-                              bd=5,
-                              bg="#FFFFFF",
-                              font=(fontName, 15),
-                              state="disabled"
-                              )
+        alphaLabel, alphaInput = tk.Label(frameAngles, text="Alpha angle: ", bd=5, bg='#DDDDDD',
+                                          font=(fontName, 15)), tk.Entry(frameAngles, name="alphaInput", bd=5,bg="#FFFFFF", font=(fontName, 15),state="disabled")
+        betaLabel, betaInput = tk.Label(frameAngles, text="Beta angle: ", bd=5, bg='#DDDDDD',
+                                        font=(fontName, 15)), tk.Entry(frameAngles, bd=5, bg="#FFFFFF",font=(fontName, 15), state="disabled")
+        gammaLabel, gammaInput = tk.Label(frameAngles, text="Gamma angle: ", bd=5, bg='#DDDDDD',
+                                          font=(fontName, 15)), tk.Entry(frameAngles, bd=5, bg="#FFFFFF",font=(fontName, 15), state="disabled")
 
         alphaLabel.grid(column=0, row=0, pady=15)
         alphaInput.grid(column=1, row=0, padx=5, pady=15)
@@ -750,8 +520,6 @@ def calcShape(shape, nSides=0):
         betaInput.grid(column=1, row=1, padx=5, pady=15)
         gammaLabel.grid(column=0, row=2, pady=15)
         gammaInput.grid(column=1, row=2, padx=5, pady=15)
-
-
     elif shape == "rightTriangle":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -834,7 +602,7 @@ def calcShape(shape, nSides=0):
                     if b<0 or c<0:
                         warningWithDelete()
                         return 0
-                    elif (b > c):
+                    elif b > c:
                         warningWithDelete("C must be greater than b.")
                         return 0
                     a = math.sqrt(c ** 2 - b ** 2)
@@ -852,7 +620,7 @@ def calcShape(shape, nSides=0):
                     if a < 0 or c < 0:
                         warningWithDelete()
                         return 0
-                    elif (a > c):
+                    elif a > c:
                         warningWithDelete("C must be greater than b.")
                         return 0
 
@@ -879,8 +647,6 @@ def calcShape(shape, nSides=0):
 
                 alpha = math.atan(a / b) * (180 / math.pi)
                 beta = 90 - alpha
-
-
             else:
                 a = float(a)
                 b = float(b)
@@ -894,19 +660,7 @@ def calcShape(shape, nSides=0):
                     return 0
 
                 if (a ** 2 + b ** 2 != c ** 2):
-                    perimeterInput.delete(0, tk.END)
-                    areaInput.delete(0, tk.END)
-                    heightInput.delete(0, tk.END)
-
-                    alphaInput.configure(state="normal")
-                    betaInput.configure(state="normal")
-                    alphaInput.delete(0, tk.END)
-                    betaInput.delete(0, tk.END)
-                    alphaInput.configure(state="disabled")
-                    betaInput.configure(state="disabled")
-
-                    messagebox.showwarning("Error with calculations",
-                                           "There couldn't exist a triangle with such side lengths")
+                    warningWithDelete()
                     return 0
 
                 s = a * b / 2
@@ -969,22 +723,7 @@ def calcShape(shape, nSides=0):
                     try:
                         threeSidesCalc(aVal, bVal, cVal)
                     except:
-                        perimeterInput.delete(0, tk.END)
-                        areaInput.delete(0, tk.END)
-                        heightInput.delete(0, tk.END)
-
-                        alphaInput.configure(state="normal")
-                        betaInput.configure(state="normal")
-                        gammaInput.configure(state="normal")
-                        alphaInput.delete(0, tk.END)
-                        betaInput.delete(0, tk.END)
-                        gammaInput.delete(0, tk.END)
-                        alphaInput.configure(state="disabled")
-                        betaInput.configure(state="disabled")
-                        gammaInput.configure(state="disabled")
-
-                        messagebox.showwarning("Error with calculations",
-                                               "There couldn't exist a triangle with such dimensions")
+                        warningWithDelete()
                 elif value == 4:
                     if (aVal != "" or bVal != ""):
                         if sVal != "":
@@ -1020,9 +759,7 @@ def calcShape(shape, nSides=0):
 
                         threeSidesCalc(a, b, c)
             except:
-                deleteAllValues()
-                messagebox.showwarning("Error with calculations",
-                                       "Please provide correct and/or more information")
+                warningWithDelete()
 
         def checkEnoughInformation():
             a = firstSideInput.get()
@@ -1038,7 +775,6 @@ def calcShape(shape, nSides=0):
                 numberOfSides += 1
 
             h = heightInput.get()
-
             s = areaInput.get()
             p = perimeterInput.get()
 
@@ -1055,74 +791,33 @@ def calcShape(shape, nSides=0):
                 return 0
 
         def deleteAllValues():
-            firstSideInput.delete(0, tk.END)
-            secondSideInput.delete(0, tk.END)
-            thirdSideInput.delete(0, tk.END)
-            perimeterInput.delete(0, tk.END)
-            areaInput.delete(0, tk.END)
-            heightInput.delete(0, tk.END)
+            inputs_to_clear = [firstSideInput, secondSideInput, thirdSideInput, perimeterInput, areaInput, heightInput]
+            inputs_to_enable_disable = [alphaInput, betaInput]
 
-            alphaInput.configure(state="normal")
-            betaInput.configure(state="normal")
-            alphaInput.delete(0, tk.END)
-            betaInput.delete(0, tk.END)
-            alphaInput.configure(state="disabled")
-            betaInput.configure(state="disabled")
+            for entry in inputs_to_clear:
+                entry.delete(0, tk.END)
 
-        buttonBack = tk.Button(frameTriangleDiagram,
-                               text="Go back",
-                               font=(fontName, 15),
-                               command=lambda: chooseShape(2)
-                               )
-        buttonCalc = tk.Button(frameTriangleDiagram,
-                               text="Calculate",
-                               font=(fontName, 15),
-                               command=lambda: calculateTriangle()
-                               )
-        buttonTrash = tk.Button(frameTriangleDiagram,
-                                text="Delete all values",
-                                font=(fontName, 15),
-                                command=lambda: deleteAllValues()
-                                )
+            for entry in inputs_to_enable_disable:
+                entry.configure(state="normal")
+                entry.delete(0, tk.END)
+                entry.configure(state="disabled")
+
+        buttonBack, buttonCalc, buttonTrash = (
+            tk.Button(frameTriangleDiagram, text="Go back", font=(fontName, 15), command=lambda: chooseShape(2)),
+            tk.Button(frameTriangleDiagram, text="Calculate", font=(fontName, 15), command=lambda: calculateTriangle()),
+            tk.Button(frameTriangleDiagram, text="Delete all values", font=(fontName, 15),
+                      command=lambda: deleteAllValues())
+        )
         buttonBack.grid(column=0, row=0, padx=5, pady=5)
         buttonCalc.grid(column=1, row=0, padx=5, pady=5)
         buttonTrash.grid(column=2, row=0, padx=5, pady=5)
 
-        firstSideLabel = tk.Label(frameSides,
-                                  text="Side a: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        firstSideInput = tk.Entry(frameSides,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
-
-        secondSideLabel = tk.Label(frameSides,
-                                   text="Side b: ",
-                                   bd=5,
-                                   bg='#DDDDDD',
-                                   font=(fontName, 15),
-                                   )
-        secondSideInput = tk.Entry(frameSides,
-                                   bd=5,
-                                   bg="#FFFFFF",
-                                   font=(fontName, 15),
-                                   )
-
-        thirdSideLabel = tk.Label(frameSides,
-                                  text="Side c: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        thirdSideInput = tk.Entry(frameSides,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
+        firstSideLabel, firstSideInput = tk.Label(frameSides, text="Side a: ", bd=5, bg='#DDDDDD',
+                                                  font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",font=(fontName, 15))
+        secondSideLabel, secondSideInput = tk.Label(frameSides, text="Side b: ", bd=5, bg='#DDDDDD',
+                                                    font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",font=(fontName, 15))
+        thirdSideLabel, thirdSideInput = tk.Label(frameSides, text="Side c: ", bd=5, bg='#DDDDDD',
+                                                  font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",font=(fontName, 15))
 
         firstSideLabel.grid(column=0, row=0, pady=15)
         firstSideInput.grid(column=1, row=0, padx=5, pady=15)
@@ -1131,88 +826,27 @@ def calcShape(shape, nSides=0):
         thirdSideLabel.grid(column=0, row=2, pady=15)
         thirdSideInput.grid(column=1, row=2, padx=5, pady=15)
 
-        firstHeightLabel = tk.Label(frameHeight,
-                                    text="Height on c: ",
-                                    bd=5,
-                                    bg='#DDDDDD',
-                                    font=(fontName, 15),
-                                    )
-        heightInput = tk.Entry(frameHeight,
-                               bd=5,
-                               bg="#FFFFFF",
-                               font=(fontName, 15),
-                               )
+        firstHeightLabel, heightInput = tk.Label(frameHeight, text="Height on c: ", bd=5, bg='#DDDDDD', font=(fontName, 15)), tk.Entry(frameHeight, bd=5, bg="#FFFFFF", font=(fontName, 15))
+
 
         firstHeightLabel.grid(column=0, row=0, pady=15)
         heightInput.grid(column=1, row=0, padx=5, pady=15)
 
-        areaLabel = tk.Label(frameAreas,
-                             text="Area: ",
-                             bd=5,
-                             bg='#DDDDDD',
-                             font=(fontName, 15),
-                             )
-        areaInput = tk.Entry(frameAreas,
-                             bd=5,
-                             bg="#FFFFFF",
-                             font=(fontName, 15),
-                             )
+        areaLabel, areaInput, perimeterLabel, perimeterInput = tk.Label(frameAreas, text="Area: ", bd=5, bg='#DDDDDD', font=(fontName, 15)), tk.Entry(frameAreas, bd=5, bg="#FFFFFF", font=(fontName, 15)), tk.Label(frameAreas, text="Perimeter: ", bd=5, bg='#DDDDDD', font=(fontName, 15)), tk.Entry(frameAreas, bd=5, bg="#FFFFFF", font=(fontName, 15))
 
-        perimeterLabel = tk.Label(frameAreas,
-                                  text="Perimeter: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        perimeterInput = tk.Entry(frameAreas,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
 
         areaLabel.grid(column=0, row=0, pady=15)
         areaInput.grid(column=1, row=0, padx=5, pady=15)
         perimeterLabel.grid(column=0, row=1, pady=15)
         perimeterInput.grid(column=1, row=1, padx=5, pady=15)
 
-        alphaLabel = tk.Label(frameAngles,
-                              text="Alpha angle: ",
-                              bd=5,
-                              bg='#DDDDDD',
-                              font=(fontName, 15),
-                              )
-        alphaInput = tk.Entry(frameAngles,
-                              name="alphaInput",
-                              bd=5,
-                              bg="#FFFFFF",
-                              font=(fontName, 15),
-                              state="disabled"
-                              )
+        alphaLabel, alphaInput = tk.Label(frameAngles, text="Alpha angle: ", bd=5, bg='#DDDDDD',
+                                          font=(fontName, 15)), tk.Entry(frameAngles, name="alphaInput", bd=5,bg="#FFFFFF", font=(fontName, 15),state="disabled")
+        betaLabel, betaInput = tk.Label(frameAngles, text="Beta angle: ", bd=5, bg='#DDDDDD',
+                                        font=(fontName, 15)), tk.Entry(frameAngles, bd=5, bg="#FFFFFF",font=(fontName, 15), state="disabled")
+        gammaLabel, gammaInput = tk.Label(frameAngles, text="Gamma angle: ", bd=5, bg='#DDDDDD',
+                                          font=(fontName, 15)), tk.Entry(frameAngles, bd=5, bg="#FFFFFF",font=(fontName, 15), state="disabled")
 
-        betaLabel = tk.Label(frameAngles,
-                             text="Beta angle: ",
-                             bd=5,
-                             bg='#DDDDDD',
-                             font=(fontName, 15),
-                             )
-        betaInput = tk.Entry(frameAngles,
-                             bd=5,
-                             bg="#FFFFFF",
-                             font=(fontName, 15),
-                             state="disabled"
-                             )
-        gammaLabel = tk.Label(frameAngles,
-                              text="Gamma angle: ",
-                              bd=5,
-                              bg='#DDDDDD',
-                              font=(fontName, 15),
-                              )
-        gammaInput = tk.Entry(frameAngles,
-                              bd=5,
-                              bg="#FFFFFF",
-                              font=(fontName, 15),
-                              state="disabled"
-                              )
         gammaInput.configure(state="normal")
         gammaInput.insert(0, str(90))
         gammaInput.configure(state="disabled")
@@ -1223,8 +857,6 @@ def calcShape(shape, nSides=0):
         betaInput.grid(column=1, row=1, padx=5, pady=15)
         gammaLabel.grid(column=0, row=2, pady=15)
         gammaInput.grid(column=1, row=2, padx=5, pady=15)
-
-
     elif shape == "isoTriangle":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -1281,19 +913,16 @@ def calcShape(shape, nSides=0):
         def diagramWindow(a, h1):
             top = Toplevel()
             top.title('Triangle diagram')
-
             polygon1 = Polygon([(0, 0), (a, 0), (a/2, h1)])
 
             fig, ax = plt.subplots(1, 1)
 
             ax.add_patch(polygon1)
-
             plt.ylim(0, math.ceil(h1))
             plt.xlim(0, math.ceil(a))
             ax.set_aspect('equal', adjustable='box')
-
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def twoSidesCalc(a, b):
             if a + b > b and b + b > a:
@@ -1320,7 +949,8 @@ def calcShape(shape, nSides=0):
                 betaInput.insert(0, str(beta))
                 alphaInput.configure(state="disabled")
                 betaInput.configure(state="disabled")
-                diagramWindow(a, b, h1)
+                diagramWindow(a, h1)
+
             else:
                 deleteAllValues()
                 messagebox.showwarning("Error with calculations",
@@ -1352,12 +982,12 @@ def calcShape(shape, nSides=0):
                 if pVal != "":
                     try:
                         if aVal!="":
-                            if a<0 or p<0:
+                            if a < 0 or p < 0:
                                 warningWithDelete()
                             b = (p-a)/2
                             twoSidesCalc(a, b)
                         elif bVal!="":
-                            if b<0 or p<0:
+                            if b < 0 or p < 0:
                                 warningWithDelete()
                             a = p-2*b
                             twoSidesCalc(a,b)
@@ -1437,147 +1067,53 @@ def calcShape(shape, nSides=0):
             alphaInput.configure(state="disabled")
             betaInput.configure(state="disabled")
 
-        buttonBack = tk.Button(frameTriangleDiagram,
-                               text="Go back",
-                               font=(fontName, 15),
-                               command=lambda: chooseShape(2)
-                               )
-        buttonCalc = tk.Button(frameTriangleDiagram,
-                               text="Calculate",
-                               font=(fontName, 15),
-                               command=lambda: calculateTriangle()
-                               )
-        buttonTrash = tk.Button(frameTriangleDiagram,
-                                text="Delete all values",
-                                font=(fontName, 15),
-                                command=lambda: deleteAllValues()
-                                )
+        buttonBack, buttonCalc, buttonTrash = (
+            tk.Button(frameTriangleDiagram, text="Go back", font=(fontName, 15), command=lambda: chooseShape(2)),
+            tk.Button(frameTriangleDiagram, text="Calculate", font=(fontName, 15), command=lambda: calculateTriangle()),
+            tk.Button(frameTriangleDiagram, text="Delete all values", font=(fontName, 15),
+                      command=lambda: deleteAllValues())
+        )
         buttonBack.grid(column=0, row=0, padx=5, pady=5)
         buttonCalc.grid(column=1, row=0, padx=5, pady=5)
         buttonTrash.grid(column=2, row=0, padx=5, pady=5)
 
-        firstSideLabel = tk.Label(frameSides,
-                                  text="Side a: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        firstSideInput = tk.Entry(frameSides,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
-
-        secondSideLabel = tk.Label(frameSides,
-                                   text="Side b (two sides): ",
-                                   bd=5,
-                                   bg='#DDDDDD',
-                                   font=(fontName, 15),
-                                   )
-        secondSideInput = tk.Entry(frameSides,
-                                   bd=5,
-                                   bg="#FFFFFF",
-                                   font=(fontName, 15),
-                                   )
-
+        firstSideLabel, firstSideInput = tk.Label(frameSides, text="Side a: ", bd=5, bg='#DDDDDD',
+                                                  font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",font=(fontName, 15))
+        secondSideLabel, secondSideInput = tk.Label(frameSides, text="Side b (two sides): ", bd=5, bg='#DDDDDD',
+                                                    font=(fontName, 15)), tk.Entry(frameSides, bd=5, bg="#FFFFFF",font=(fontName, 15))
 
         firstSideLabel.grid(column=0, row=0, pady=15)
         firstSideInput.grid(column=1, row=0, padx=5, pady=15)
         secondSideLabel.grid(column=0, row=1, pady=15)
         secondSideInput.grid(column=1, row=1, padx=5, pady=15)
 
-        firstHeightLabel = tk.Label(frameHeight,
-                                    text="Height on a: ",
-                                    bd=5,
-                                    bg='#DDDDDD',
-                                    font=(fontName, 15),
-                                    )
-        firstHeightInput = tk.Entry(frameHeight,
-                                    bd=5,
-                                    bg="#FFFFFF",
-                                    font=(fontName, 15),
-                                    )
-
-        secondHeightLabel = tk.Label(frameHeight,
-                                     text="Height on b: ",
-                                     bd=5,
-                                     bg='#DDDDDD',
-                                     font=(fontName, 15),
-                                     )
-        secondHeightInput = tk.Entry(frameHeight,
-                                     bd=5,
-                                     bg="#FFFFFF",
-                                     font=(fontName, 15),
-                                     )
-
+        firstHeightLabel, firstHeightInput = tk.Label(frameHeight, text="Height on a: ", bd=5, bg='#DDDDDD',
+                                                      font=(fontName, 15)), tk.Entry(frameHeight, bd=5, bg="#FFFFFF",font=(fontName, 15))
+        secondHeightLabel, secondHeightInput = tk.Label(frameHeight, text="Height on b: ", bd=5, bg='#DDDDDD',
+                                                        font=(fontName, 15)), tk.Entry(frameHeight, bd=5, bg="#FFFFFF",font=(fontName, 15))
 
         firstHeightLabel.grid(column=0, row=0, pady=15)
         firstHeightInput.grid(column=1, row=0, padx=5, pady=15)
         secondHeightLabel.grid(column=0, row=1, pady=15)
         secondHeightInput.grid(column=1, row=1, padx=5, pady=15)
 
-        areaLabel = tk.Label(frameAreas,
-                             text="Area: ",
-                             bd=5,
-                             bg='#DDDDDD',
-                             font=(fontName, 15),
-                             )
-        areaInput = tk.Entry(frameAreas,
-                             bd=5,
-                             bg="#FFFFFF",
-                             font=(fontName, 15),
-                             )
-
-        perimeterLabel = tk.Label(frameAreas,
-                                  text="Perimeter: ",
-                                  bd=5,
-                                  bg='#DDDDDD',
-                                  font=(fontName, 15),
-                                  )
-        perimeterInput = tk.Entry(frameAreas,
-                                  bd=5,
-                                  bg="#FFFFFF",
-                                  font=(fontName, 15),
-                                  )
+        areaLabel, areaInput = tk.Label(frameAreas, text="Area: ", bd=5, bg='#DDDDDD', font=(fontName, 15)), tk.Entry(frameAreas, bd=5, bg="#FFFFFF", font=(fontName, 15))
+        perimeterLabel, perimeterInput = tk.Label(frameAreas, text="Perimeter: ", bd=5, bg='#DDDDDD', font=(fontName, 15)), tk.Entry(frameAreas, bd=5, bg="#FFFFFF",font=(fontName, 15))
 
         areaLabel.grid(column=0, row=0, pady=15)
         areaInput.grid(column=1, row=0, padx=5, pady=15)
         perimeterLabel.grid(column=0, row=1, pady=15)
         perimeterInput.grid(column=1, row=1, padx=5, pady=15)
 
-        alphaLabel = tk.Label(frameAngles,
-                              text="Alpha angle: ",
-                              bd=5,
-                              bg='#DDDDDD',
-                              font=(fontName, 15),
-                              )
-        alphaInput = tk.Entry(frameAngles,
-                              name="alphaInput",
-                              bd=5,
-                              bg="#FFFFFF",
-                              font=(fontName, 15),
-                              state="disabled"
-                              )
-
-        betaLabel = tk.Label(frameAngles,
-                             text="Beta angle: ",
-                             bd=5,
-                             bg='#DDDDDD',
-                             font=(fontName, 15),
-                             )
-        betaInput = tk.Entry(frameAngles,
-                             bd=5,
-                             bg="#FFFFFF",
-                             font=(fontName, 15),
-                             state="disabled"
-                             )
+        alphaLabel, alphaInput = tk.Label(frameAngles, text="Alpha angle: ", bd=5, bg='#DDDDDD',
+                                          font=(fontName, 15)), tk.Entry(frameAngles, name="alphaInput", bd=5,bg="#FFFFFF", font=(fontName, 15),state="disabled")
+        betaLabel, betaInput = tk.Label(frameAngles, text="Beta angle: ", bd=5, bg='#DDDDDD',
+                                        font=(fontName, 15)), tk.Entry(frameAngles, bd=5, bg="#FFFFFF", font=(fontName, 15), state="disabled")
 
         alphaLabel.grid(column=0, row=0, pady=15)
         alphaInput.grid(column=1, row=0, padx=5, pady=15)
         betaLabel.grid(column=0, row=1, pady=15)
         betaInput.grid(column=1, row=1, padx=5, pady=15)
-
-
     elif shape == "equTriangle":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -1640,7 +1176,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def oneSideCalc(a):
             if a>0:
@@ -1900,8 +1436,6 @@ def calcShape(shape, nSides=0):
         alphaInput.configure(state="normal")
         alphaInput.insert(0, str(60))
         alphaInput.configure(state="disabled")
-
-
     elif shape == "square":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -1969,7 +1503,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def oneSideCalc(a):
             if a > 0:
@@ -2230,8 +1764,6 @@ def calcShape(shape, nSides=0):
         alphaInput.configure(state="normal")
         alphaInput.insert(0, str(90))
         alphaInput.configure(state="disabled")
-
-
     elif shape == "rectangle":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -2300,7 +1832,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def sideCalc(a, b):
             if a > 0 and b > 0:
@@ -2605,8 +2137,6 @@ def calcShape(shape, nSides=0):
         alphaInput.grid(column=1, row=0, padx=5, pady=15)
         betaLabel.grid(column=0, row=1, pady=15)
         betaInput.grid(column=1, row=1, padx=5, pady=15)
-
-
     elif shape == "rhombus":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -2678,7 +2208,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def sideCalc(a, h):
             if a > 0 and h > 0:
@@ -3045,8 +2575,6 @@ def calcShape(shape, nSides=0):
         alphaInput.grid(column=1, row=0, padx=5, pady=15)
         betaLabel.grid(column=0, row=1, pady=15)
         betaInput.grid(column=1, row=1, padx=5, pady=15)
-
-
     elif shape == "circle":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -3098,7 +2626,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def radiusCalc(r):
             if r > 0:
@@ -3270,8 +2798,6 @@ def calcShape(shape, nSides=0):
         areaInput.grid(column=1, row=0, padx=5, pady=15)
         perimeterLabel.grid(column=0, row=1, pady=15)
         perimeterInput.grid(column=1, row=1, padx=5, pady=15)
-
-
     elif shape == "ellipse":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -3323,7 +2849,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def sidesCalc(a,b):
             if a > 0 and b > 0:
@@ -3490,8 +3016,6 @@ def calcShape(shape, nSides=0):
         perimeterInput.grid(column=1, row=1, padx=5, pady=15)
 
         perimeterInput.configure(state="disabled")
-
-
     elif shape == "polygon":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -3562,18 +3086,16 @@ def calcShape(shape, nSides=0):
 
             vertices.append(vertices[0])  # Connect the last vertex to the first to close the polygon
 
-            # Create a Polygon patch and add it to the axis
             polygon = Polygon(vertices)
 
             ax.add_patch(polygon)
 
-            # Set the axis limits and aspect ratio
             plt.xlim(0, 2*a)
             plt.ylim(0, 2*a)
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def oneSideCalc(a):
             n = int(nSides)
@@ -3809,8 +3331,6 @@ def calcShape(shape, nSides=0):
         alphaInput.configure(state="normal")
         alphaInput.insert(0, str((int(nSides) - 2) * 180 / int(nSides)))
         alphaInput.configure(state="disabled")
-
-
     elif shape == "sphere":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -3865,7 +3385,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def radiusCalc(r):
             if r > 0:
@@ -4099,8 +3619,6 @@ def calcShape(shape, nSides=0):
         areaCircleInput.grid(column=1, row=2, padx=5, pady=15)
         perimeterLabel.grid(column=0, row=3, pady=15)
         perimeterInput.grid(column=1, row=3, padx=5, pady=15)
-
-
     elif shape == "cube":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -4163,7 +3681,7 @@ def calcShape(shape, nSides=0):
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
-            canvas.get_tk_widget().grid(row=0, column=0)  # Use grid manager for the canvas
+            canvas.get_tk_widget().grid(row=0, column=0)
 
         def oneSideCalc(a):
             if a > 0:
@@ -4432,7 +3950,6 @@ def calcShape(shape, nSides=0):
         areaFaceInput.grid(column=1, row=2, padx=5, pady=15)
         perimeterLabel.grid(column=0, row=3, pady=15)
         perimeterInput.grid(column=1, row=3, padx=5, pady=15)
-
 
 dimensions()
 window.mainloop()
