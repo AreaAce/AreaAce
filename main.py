@@ -278,14 +278,14 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
                 # We delete and put the values to display to user
-                firstSideInput.insert(0, str(a))
-                secondSideInput.insert(0, str(b))
-                thirdSideInput.insert(0, str(c))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                firstHeightInput.insert(0, str(h1))
-                secondHeightInput.insert(0, str(h2))
-                thirdHeightInput.insert(0, str(h3))
+                firstSideInput.insert(0, str(round(a, 13)))
+                secondSideInput.insert(0, str(round(b, 13)))
+                thirdSideInput.insert(0, str(round(c, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                firstHeightInput.insert(0, str(round(h1, 13)))
+                secondHeightInput.insert(0, str(round(h2, 13)))
+                thirdHeightInput.insert(0, str(round(h3, 13)))
 
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
@@ -373,12 +373,14 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
                         elif cVal == "":
                             c = p - a - b
                         threeSidesCalc(a, b, c)
+
                     except:
                         deleteAllValues()
                         messagebox.showwarning("Error with calculations",
                                                "There couldn't exist a triangle with dimensions")
             elif value == 3:
                 if aVal != "":
+                    warningWithDelete("Not enough information given")
                     '''
                     halfP = p / 2
                     pMinusA = halfP-a
@@ -394,11 +396,14 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
                     threeSidesCalc(a,b,c)
                     '''
 
-
                 elif bVal != "":
+                    warningWithDelete("Not enough information given")
                     b = p - a - c
                 elif cVal != "":
+                    warningWithDelete("Not enough information given")
                     c = p - a - b
+            else:
+                warningWithDelete("Not enough information given")
 
         def checkEnoughInformation():
             a = firstSideInput.get()
@@ -520,6 +525,7 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
         betaInput.grid(column=1, row=1, padx=5, pady=15)
         gammaLabel.grid(column=0, row=2, pady=15)
         gammaInput.grid(column=1, row=2, padx=5, pady=15)
+
     elif shape == "rightTriangle":
         window.columnconfigure(0, weight=1)
         window.columnconfigure(1, weight=1)
@@ -670,19 +676,16 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
                 alpha = math.atan(a / b) * (180 / math.pi)
                 beta = 90 - alpha
 
+            deleteAllValues()
+            firstSideInput.insert(0, str(round(a, 13)))
+            secondSideInput.insert(0, str(round(b, 13)))
+            thirdSideInput.insert(0, str(round(c, 13)))
 
-            firstSideInput.insert(0, str(a))
-            secondSideInput.insert(0, str(b))
-            thirdSideInput.insert(0, str(c))
+            perimeterInput.insert(0, str(round(p, 13)))
 
-            perimeterInput.delete(0, tk.END)
-            perimeterInput.insert(0, str(p))
+            areaInput.insert(0, str(round(s, 13)))
 
-            areaInput.delete(0, tk.END)
-            areaInput.insert(0, str(s))
-
-            heightInput.delete(0, tk.END)
-            heightInput.insert(0, str(h))
+            heightInput.insert(0, str(round(h, 13)))
 
             alphaInput.configure(state="normal")
             betaInput.configure(state="normal")
@@ -758,6 +761,8 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
                         b = math.sqrt(c ** 2 - a ** 2)
 
                         threeSidesCalc(a, b, c)
+                    else:
+                        warningWithDelete("Not enough information given")
             except:
                 warningWithDelete()
 
@@ -918,8 +923,8 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
             fig, ax = plt.subplots(1, 1)
 
             ax.add_patch(polygon1)
-            plt.ylim(0, math.ceil(h1))
-            plt.xlim(0, math.ceil(a))
+            plt.ylim(0, h1)
+            plt.xlim(0, a)
             ax.set_aspect('equal', adjustable='box')
             canvas = FigureCanvasTkAgg(fig, master=top)
             canvas.get_tk_widget().grid(row=0, column=0)
@@ -936,12 +941,12 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-                secondSideInput.insert(0, str(b))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                firstHeightInput.insert(0, str(h1))
-                secondHeightInput.insert(0, str(h2))
+                firstSideInput.insert(0, str(round(a, 13)))
+                secondSideInput.insert(0, str(round(b, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                firstHeightInput.insert(0, str(round(h1, 13)))
+                secondHeightInput.insert(0, str(round(h2, 13)))
 
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
@@ -1171,8 +1176,8 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
             ax.add_patch(polygon1)
 
-            plt.ylim(0, math.ceil(h1))
-            plt.xlim(0, math.ceil(a))
+            plt.ylim(0, h1)
+            plt.xlim(0, a)
             ax.set_aspect('equal', adjustable='box')
 
             canvas = FigureCanvasTkAgg(fig, master=top)
@@ -1188,12 +1193,12 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                firstHeightInput.insert(0, str(h))
-                inRadiusInput.insert(0, str(r))
-                outRadiusInput.insert(0, str(R))
+                firstSideInput.insert(0, str(round(a, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                firstHeightInput.insert(0, str(round(h, 13)))
+                inRadiusInput.insert(0, str(round(r, 13)))
+                outRadiusInput.insert(0, str(round(R, 13)))
 
                 diagramWindow(a,h)
             else:
@@ -1515,12 +1520,12 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                firstDiagonal.insert(0, str(d))
-                inRadiusInput.insert(0, str(r))
-                outRadiusInput.insert(0, str(R))
+                firstSideInput.insert(0, str(round(a, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                firstDiagonal.insert(0, str(round(d, 13)))
+                inRadiusInput.insert(0, str(round(r, 13)))
+                outRadiusInput.insert(0, str(round(R, 13)))
 
                 diagramWindow(a)
             else:
@@ -1844,11 +1849,11 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-                secondSideInput.insert(0, str(b))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                firstDiagonal.insert(0, str(d))
+                firstSideInput.insert(0, str(round(a, 13)))
+                secondSideInput.insert(0, str(round(b, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                firstDiagonal.insert(0, str(round(d, 13)))
 
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
@@ -2222,12 +2227,12 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-                firstHeightInput.insert(0, str(h))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                firstDiagonal.insert(0, str(d1))
-                secondDiagonal.insert(0, str(d2))
+                firstSideInput.insert(0, str(round(a, 13)))
+                firstHeightInput.insert(0, str(round(h, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                firstDiagonal.insert(0, str(round(d1, 13)))
+                secondDiagonal.insert(0, str(round(d2, 13)))
 
                 alphaInput.configure(state="normal")
                 betaInput.configure(state="normal")
@@ -2636,10 +2641,10 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(r))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                secondSideInput.insert(0, str(d))
+                firstSideInput.insert(0, str(round(r, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                secondSideInput.insert(0, str(round(d, 13)))
 
                 diagramWindow(r)
             else:
@@ -2858,15 +2863,14 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-
-                secondSideInput.insert(0, str(b))
+                firstSideInput.insert(0, str(round(a, 13)))
+                secondSideInput.insert(0, str(round(b, 13)))
 
                 perimeterInput.configure(state="normal")
-                perimeterInput.insert(0, str(p))
+                perimeterInput.insert(0, str(round(p, 13)))
                 perimeterInput.configure(state="disabled")
 
-                areaInput.insert(0, str(s))
+                areaInput.insert(0, str(round(s, 13)))
 
 
                 diagramWindow(a,b)
@@ -3073,10 +3077,8 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
             top.title(str(n) + '-sided regular polygon diagram')
 
             fig, ax = plt.subplots(1, 1)
-
             vertices = []
             i = 0
-
             # Calculate the coordinates of the vertices using a while loop
             while i < n:
                 x = a * math.cos(2 * math.pi * i / n) + a
@@ -3107,11 +3109,11 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                inRadiusInput.insert(0, str(r))
-                outRadiusInput.insert(0, str(R))
+                firstSideInput.insert(0, str(round(a, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                inRadiusInput.insert(0, str(round(r, 13)))
+                outRadiusInput.insert(0, str(round(R, 13)))
 
                 diagramWindow(a)
             else:
@@ -3397,12 +3399,12 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(r))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                areaCircleInput.insert(0, str(sC))
-                secondSideInput.insert(0, str(d))
-                volumeInput.insert(0, str(v))
+                firstSideInput.insert(0, str(round(r, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                areaCircleInput.insert(0, str(round(sC, 13)))
+                secondSideInput.insert(0, str(round(d, 13)))
+                volumeInput.insert(0, str(round(v, 13)))
 
                 diagramWindow(r)
             else:
@@ -3694,13 +3696,13 @@ def calcShape(shape, nSides = 0): # 3rd window, when the user has choosen the sh
 
                 deleteAllValues()
 
-                firstSideInput.insert(0, str(a))
-                perimeterInput.insert(0, str(p))
-                areaInput.insert(0, str(s))
-                diagonalInput.insert(0, str(d))
-                faceDiagonalInput.insert(0, str(dF))
-                areaFaceInput.insert(0, str(sF))
-                volumeInput.insert(0, str(v))
+                firstSideInput.insert(0, str(round(a, 13)))
+                perimeterInput.insert(0, str(round(p, 13)))
+                areaInput.insert(0, str(round(s, 13)))
+                diagonalInput.insert(0, str(round(d, 13)))
+                faceDiagonalInput.insert(0, str(round(dF, 13)))
+                areaFaceInput.insert(0, str(round(sF, 13)))
+                volumeInput.insert(0, str(round(v, 13)))
 
                 diagramWindow(a)
             else:
